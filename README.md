@@ -2,7 +2,7 @@
 
 **Liquidity that never leaves.** Stablecoin FX markets and depeg backstops on **Solana** and on **1inch Aqua** (Base). One wallet balance makes markets across 8 stablecoins and stands behind every coin when one breaks. The coins never leave the wallet.
 
-[App](https://stabrix.vercel.app) · [Litepaper](https://stabrix.vercel.app/litepaper) · [Pitch deck](https://stabrix.vercel.app/deck) · [Solana mainnet program](https://solscan.io/account/9yndJ2CVGSWr58nXNVS8rgkYFiiXghkchicSK5KjhABw) · [Addresses](#8-addresses-and-revenue) · [Run locally](#17-run-locally) · [Tests](#18-verify-and-tests)
+[App](https://halcyon.vercel.app) · [Litepaper](https://halcyon.vercel.app/litepaper) · [Pitch deck](https://halcyon.vercel.app/deck) · [Solana mainnet program](https://solscan.io/account/9yndJ2CVGSWr58nXNVS8rgkYFiiXghkchicSK5KjhABw) · [Addresses](#8-addresses-and-revenue) · [Run locally](#17-run-locally) · [Tests](#18-verify-and-tests)
 
 ![Landing](docs/screenshots/landing.png)
 
@@ -238,14 +238,16 @@ Same program and oracle addresses, with test coins anyone can mint from the app 
 
 ### Base (8453), on 1inch's official Aqua and AquaSwapVMRouter
 
+These contracts were deployed and verified before a rename, so block explorers show their earlier contract names. The logic is identical.
+
 | Contract | Address |
 |---|---|
-| StabrixRouter | [0xEbdbc7e05cfE6F8D2980d7EA4f40462e961808eB](https://basescan.org/address/0xEbdbc7e05cfE6F8D2980d7EA4f40462e961808eB) |
-| StabrixExtruction | [0xc8721a6c1b8fAeC6E9Ef03e7EbD9d3fC7E7C45E9](https://basescan.org/address/0xc8721a6c1b8fAeC6E9Ef03e7EbD9d3fC7E7C45E9) |
-| StabrixBackstop | [0x2Af9211c1Ffe418345bC6979d563ca9eC05D7DEc](https://basescan.org/address/0x2Af9211c1Ffe418345bC6979d563ca9eC05D7DEc) |
-| StabrixOracle | [0xD3BD0E168759C516af8CEFA5afC3Fdc6Af186Ed7](https://basescan.org/address/0xD3BD0E168759C516af8CEFA5afC3Fdc6Af186Ed7) |
-| StabrixBatchTaker | [0xf934Dd022a6d2623E753710fd68A374fD0ab4b95](https://basescan.org/address/0xf934Dd022a6d2623E753710fd68A374fD0ab4b95) |
-| StabrixLens | [0x86f41CF038bd17fC96FB0ff07ac0B3539E9829B6](https://basescan.org/address/0x86f41CF038bd17fC96FB0ff07ac0B3539E9829B6) |
+| HalcyonRouter | [0xEbdbc7e05cfE6F8D2980d7EA4f40462e961808eB](https://basescan.org/address/0xEbdbc7e05cfE6F8D2980d7EA4f40462e961808eB) |
+| HalcyonExtruction | [0xc8721a6c1b8fAeC6E9Ef03e7EbD9d3fC7E7C45E9](https://basescan.org/address/0xc8721a6c1b8fAeC6E9Ef03e7EbD9d3fC7E7C45E9) |
+| HalcyonBackstop | [0x2Af9211c1Ffe418345bC6979d563ca9eC05D7DEc](https://basescan.org/address/0x2Af9211c1Ffe418345bC6979d563ca9eC05D7DEc) |
+| HalcyonOracle | [0xD3BD0E168759C516af8CEFA5afC3Fdc6Af186Ed7](https://basescan.org/address/0xD3BD0E168759C516af8CEFA5afC3Fdc6Af186Ed7) |
+| HalcyonBatchTaker | [0xf934Dd022a6d2623E753710fd68A374fD0ab4b95](https://basescan.org/address/0xf934Dd022a6d2623E753710fd68A374fD0ab4b95) |
+| HalcyonLens | [0x86f41CF038bd17fC96FB0ff07ac0B3539E9829B6](https://basescan.org/address/0x86f41CF038bd17fC96FB0ff07ac0B3539E9829B6) |
 | 1inch Aqua (official) | [0x1111113CCf1426A8E30e2bfF5E005d929bF6a90a](https://basescan.org/address/0x1111113CCf1426A8E30e2bfF5E005d929bF6a90a) |
 | 1inch AquaSwapVMRouter (official) | [0x111111338c5091E8440b67B168bAe16a668AC0De](https://basescan.org/address/0x111111338c5091E8440b67B168bAe16a668AC0De) |
 
@@ -253,12 +255,12 @@ Same program and oracle addresses, with test coins anyone can mint from the app 
 
 | Contract | Address |
 |---|---|
-| StabrixRouter | [0x0dBF59AeCD34c52516DDF4143fc827341E066074](https://sepolia.basescan.org/address/0x0dBF59AeCD34c52516DDF4143fc827341E066074) |
-| StabrixExtruction | [0xCB8c96CAAE6131b2B71b0E597B099c0891f608f9](https://sepolia.basescan.org/address/0xCB8c96CAAE6131b2B71b0E597B099c0891f608f9) |
-| StabrixBackstop | [0x2DE563f81ed933be470075e28d118c54e4271F24](https://sepolia.basescan.org/address/0x2DE563f81ed933be470075e28d118c54e4271F24) |
-| StabrixOracle | [0x9B60A21F729CC6138E89d84615c1c26b06f31354](https://sepolia.basescan.org/address/0x9B60A21F729CC6138E89d84615c1c26b06f31354) |
-| StabrixBatchTaker | [0xFD9a7555C958d471238Ac0DD11B077a0da1f5588](https://sepolia.basescan.org/address/0xFD9a7555C958d471238Ac0DD11B077a0da1f5588) |
-| StabrixLens | [0x2691368CcfF8AE2048DC17171fC98853f9De1Ff5](https://sepolia.basescan.org/address/0x2691368CcfF8AE2048DC17171fC98853f9De1Ff5) |
+| HalcyonRouter | [0x0dBF59AeCD34c52516DDF4143fc827341E066074](https://sepolia.basescan.org/address/0x0dBF59AeCD34c52516DDF4143fc827341E066074) |
+| HalcyonExtruction | [0xCB8c96CAAE6131b2B71b0E597B099c0891f608f9](https://sepolia.basescan.org/address/0xCB8c96CAAE6131b2B71b0E597B099c0891f608f9) |
+| HalcyonBackstop | [0x2DE563f81ed933be470075e28d118c54e4271F24](https://sepolia.basescan.org/address/0x2DE563f81ed933be470075e28d118c54e4271F24) |
+| HalcyonOracle | [0x9B60A21F729CC6138E89d84615c1c26b06f31354](https://sepolia.basescan.org/address/0x9B60A21F729CC6138E89d84615c1c26b06f31354) |
+| HalcyonBatchTaker | [0xFD9a7555C958d471238Ac0DD11B077a0da1f5588](https://sepolia.basescan.org/address/0xFD9a7555C958d471238Ac0DD11B077a0da1f5588) |
+| HalcyonLens | [0x2691368CcfF8AE2048DC17171fC98853f9De1Ff5](https://sepolia.basescan.org/address/0x2691368CcfF8AE2048DC17171fC98853f9De1Ff5) |
 | 1inch Aqua (unmodified source) | [0x9C1c395C0B1B15eF4DE0B618597b1e221b7E2128](https://sepolia.basescan.org/address/0x9C1c395C0B1B15eF4DE0B618597b1e221b7E2128) |
 | 1inch AquaSwapVMRouter (unmodified source) | [0xd7451569651a98870d8519Ae6eCbEA94024B6416](https://sepolia.basescan.org/address/0xd7451569651a98870d8519Ae6eCbEA94024B6416) |
 
@@ -286,8 +288,8 @@ Each strategy an LP opens costs 0.0027 SOL of rent, refunded on close.
 |---|---|
 | **Solana** | Native program in Rust (Pinocchio), SPL Token and Token-2022 delegates for custody, Wallet Standard for wallets |
 | **1inch Aqua** | Every Base strategy is an Aqua allowance over the LP's wallet, so one balance backs ranges and a backstop at once |
-| **1inch SwapVM** | Two new instructions, `StabrixTick` (opcode 34) and `StabrixBackstop` (opcode 35), also running on 1inch's official AquaSwapVMRouter through its Extruction opcode with no 1inch contract modified |
-| **Chainlink CRE** | `cre/depeg-sentinel` (Go) sets FX rates and halts on Base, with consensus across nodes and signed reports to `StabrixOracle` |
+| **1inch SwapVM** | Two new instructions, `HalcyonTick` (opcode 34) and `HalcyonBackstop` (opcode 35), also running on 1inch's official AquaSwapVMRouter through its Extruction opcode with no 1inch contract modified |
+| **Chainlink CRE** | `cre/depeg-sentinel` (Go) sets FX rates and halts on Base, with consensus across nodes and signed reports to `HalcyonOracle` |
 | **Chainlink Data Feeds** | EUR/USD, BRL/USD, IDR/USD and stablecoin feeds on Base |
 | **Base** | EVM deployment on mainnet and Sepolia |
 | **Pyth** | Market price accounts the Solana sentinel reads before reporting |
@@ -297,12 +299,12 @@ Each strategy an LP opens costs 0.0027 SOL of rent, refunded on close.
 
 | 1inch primitive | What Halcyon does with it | Code |
 |---|---|---|
-| **Aqua shared liquidity** | One balance backs FX ranges on two routers and a backstop at once | [test](contracts/test/StabrixBackstop.t.sol#L181) |
+| **Aqua shared liquidity** | One balance backs FX ranges on two routers and a backstop at once | [test](contracts/test/HalcyonBackstop.t.sol#L181) |
 | **Ship and dock** | Opening a strategy is one `Aqua.ship`, closing it is `dock` | [`sdk/src/client.ts`](sdk/src/client.ts#L516-L550) |
-| **Pull and push settlement** | A fill pulls the input to the LP and pushes the output to the taker in one call | [`StabrixPricing.sol`](contracts/src/StabrixPricing.sol#L18-L77) |
-| **255-byte arguments** | 219 bytes for an 8-coin range, 209 for a backstop | [`StabrixConfig.sol`](contracts/src/StabrixConfig.sol#L40-L57) |
-| **Official AquaSwapVMRouter** | Both instructions run on 1inch's deployed router through Extruction (opcode 32) | [`StabrixExtruction.sol`](contracts/src/StabrixExtruction.sol), [test](contracts/test/StabrixRouter.t.sol#L283) |
-| **Both routers, one transaction** | `StabrixBatchTaker` fills LPs on both routers in one swap | [`StabrixBatchTaker.sol`](contracts/src/StabrixBatchTaker.sol#L31) |
+| **Pull and push settlement** | A fill pulls the input to the LP and pushes the output to the taker in one call | [`HalcyonPricing.sol`](contracts/src/HalcyonPricing.sol#L18-L77) |
+| **255-byte arguments** | 219 bytes for an 8-coin range, 209 for a backstop | [`HalcyonConfig.sol`](contracts/src/HalcyonConfig.sol#L40-L57) |
+| **Official AquaSwapVMRouter** | Both instructions run on 1inch's deployed router through Extruction (opcode 32) | [`HalcyonExtruction.sol`](contracts/src/HalcyonExtruction.sol), [test](contracts/test/HalcyonRouter.t.sol#L283) |
+| **Both routers, one transaction** | `HalcyonBatchTaker` fills LPs on both routers in one swap | [`HalcyonBatchTaker.sol`](contracts/src/HalcyonBatchTaker.sol#L31) |
 
 ### Chainlink CRE details
 
@@ -312,7 +314,7 @@ Each strategy an LP opens costs 0.0027 SOL of rent, refunded on close.
 | Onchain read | One Multicall3 call: every Chainlink feed and the oracle's status per coin | [`main.go`](cre/depeg-sentinel/main.go#L55-L69) |
 | Offchain read | CoinGecko and DefiLlama, median consensus across nodes | [`main.go`](cre/depeg-sentinel/main.go#L72-L83) |
 | Decide | Halt, resume and rate push rules | [`policy.go`](cre/depeg-sentinel/policy.go#L120-L206) |
-| Write | Signed report through the CRE forwarder to `StabrixOracle.onReport` | [`main.go`](cre/depeg-sentinel/main.go#L138-L166) |
+| Write | Signed report through the CRE forwarder to `HalcyonOracle.onReport` | [`main.go`](cre/depeg-sentinel/main.go#L138-L166) |
 
 ## 10. Tech stack
 
@@ -334,7 +336,7 @@ Each strategy an LP opens costs 0.0027 SOL of rent, refunded on close.
 flowchart TB
     subgraph Client
         UI[Next.js app]
-        SDK["@stabrix/sdk<br/>quotes, 64-slice split, open, close"]
+        SDK["@halcyon/sdk<br/>quotes, 64-slice split, open, close"]
         UI --> SDK
     end
 
@@ -349,12 +351,12 @@ flowchart TB
     end
 
     subgraph Base
-        BT[StabrixBatchTaker]
-        SR[StabrixRouter<br/>opcodes 34, 35]
+        BT[HalcyonBatchTaker]
+        SR[HalcyonRouter<br/>opcodes 34, 35]
         IR[1inch AquaSwapVMRouter<br/>Extruction]
-        PR[StabrixPricing<br/>StabrixBackstopPricing]
+        PR[HalcyonPricing<br/>HalcyonBackstopPricing]
         AQ[1inch Aqua<br/>allowances over LP wallets]
-        SO[StabrixOracle]
+        SO[HalcyonOracle]
         BT --> SR & IR
         SR & IR --> PR
         PR --> AQ
@@ -384,10 +386,10 @@ Instructions: `init_oracle`, `set_coin`, `set_config`, `report`, `guardian`, `op
 ```mermaid
 sequenceDiagram
     actor U as Trader
-    participant BT as StabrixBatchTaker
+    participant BT as HalcyonBatchTaker
     participant R as Router (Halcyon or 1inch)
     participant P as Pricing
-    participant O as StabrixOracle
+    participant O as HalcyonOracle
     participant A as 1inch Aqua
     U->>BT: swap(legs, minOut, deadline)
     loop each leg
@@ -461,7 +463,7 @@ Planned, after an audit:
 
 ## 16. Team
 
-Halcyon is built by a small independent team that works pseudonymously. Reach out through the links on [stabrix.vercel.app](https://stabrix.vercel.app).
+Halcyon is built by a small independent team that works pseudonymously. Reach out through the links on [halcyon.vercel.app](https://halcyon.vercel.app).
 
 Code was written with Claude Code as a pair programmer. Every number in this README comes from a test, a command in this repo or a linked transaction.
 
@@ -499,7 +501,7 @@ npm run solana:seed -- --cluster=devnet
 npm install
 (cd contracts && npm install)
 FORK_PORT=8556 DEPLOYMENT_NAME=base-fork-fx ./ops/devnet.sh
-npm run price-api -w @stabrix/ops
+npm run price-api -w @halcyon/ops
 cd app && NEXT_PUBLIC_DEV_ACCOUNTS=1 NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8556 DEPLOYMENT_NAME=base-fork-fx npx next dev -p 3000
 ```
 
@@ -551,10 +553,10 @@ The app runs on Vercel's free tier: import the repo, set Root Directory to `app`
 | Solana parity (600 vectors) | Ranges with up to 8 coins and 4, 6 and 9 decimals, and backstops, give the same output or the same error in Rust and in the TypeScript SDK |
 | Solana end-to-end (21 checks) | On a local validator: oracle prices, opening a range moves no coins, quotes equal fills, a halt routes to the backstop, ranges refuse the halted coin, slippage guard, guardian resume, close refunds rent, only the maker can close, activity log |
 | Solana mainnet rehearsal | Full deploy, setup and report on a validator cloned from mainnet accounts, with six attacker transactions refused, before the real deploy |
-| `StabrixMath.t.sol` (15) | Radius and exact-in match a reference, the edge and exposure cap stop a dump. Fuzzed at 2,000 runs: the LP never loses value, a round trip never profits, a split trade never beats the whole trade |
-| `StabrixFx.t.sol` (19) | Every FX pair at the feed rate, FX fee only on FX pairs, stale feeds pause FX ranges but not dollar ranges |
-| `StabrixBackstop.t.sol` (16) | Dormant until a depeg, discount grows with size, cap stops buying, never pays above par, one balance backs a range and a backstop |
-| `StabrixRouter.t.sol` (21) | Funds stay in the wallet, quote equals swap, halts block inflow only, forwarder and owner checks, batch across both routers |
+| `HalcyonMath.t.sol` (15) | Radius and exact-in match a reference, the edge and exposure cap stop a dump. Fuzzed at 2,000 runs: the LP never loses value, a round trip never profits, a split trade never beats the whole trade |
+| `HalcyonFx.t.sol` (19) | Every FX pair at the feed rate, FX fee only on FX pairs, stale feeds pause FX ranges but not dollar ranges |
+| `HalcyonBackstop.t.sol` (16) | Dormant until a depeg, discount grows with size, cap stops buying, never pays above par, one balance backs a range and a backstop |
+| `HalcyonRouter.t.sol` (21) | Funds stay in the wallet, quote equals swap, halts block inflow only, forwarder and owner checks, batch across both routers |
 | `fork/BaseFork.t.sol` (9) | On a Base fork with real tokens: every pair fills on 1inch's official router, a backstop buys real USDe after a CRE depeg report |
 | SDK (745) | Byte-for-byte parity with Solidity and with the Solana program, routing, the clients against a chain |
 | Workflow (21) | Halt and resume policy, price parsing, consensus masks, report encoding |
@@ -564,11 +566,11 @@ cd solana && cargo test --manifest-path program/Cargo.toml
 cd ops && npm run solana:e2e
 cd contracts && forge test
 BASE_RPC_URL=https://mainnet.base.org forge test --match-path test/fork/BaseFork.t.sol
-npm test -w @stabrix/sdk
+npm test -w @halcyon/sdk
 cd cre/depeg-sentinel && go test ./...
 ```
 
-To check the mainnet binary, build with `cargo-build-sbf --manifest-path solana/program/Cargo.toml` and compare its sha256 with `8f26a9e76d87850b277b259c794a410501cf4135e6e76765203af80b3be35fd4`, or dump the deployed program with `solana program dump -u m 9yndJ2CVGSWr58nXNVS8rgkYFiiXghkchicSK5KjhABw stabrix.so`.
+To check the mainnet binary, build with `cargo-build-sbf --manifest-path solana/program/Cargo.toml` and compare its sha256 with `8f26a9e76d87850b277b259c794a410501cf4135e6e76765203af80b3be35fd4`, or dump the deployed program with `solana program dump -u m 9yndJ2CVGSWr58nXNVS8rgkYFiiXghkchicSK5KjhABw halcyon.so`.
 
 ### Measured on Base Sepolia
 
@@ -600,15 +602,15 @@ Halcyon/
 │   ├── src/state.rs                  account layouts
 │   └── tests/vectors.rs              parity vectors for the SDK
 ├── contracts/                 Solidity 0.8.30, Foundry
-│   ├── src/StabrixRouter.sol         SwapVM v1.0.2 plus opcodes 34 and 35
-│   ├── src/StabrixMath.sol           the sphere AMM, closed form
-│   ├── src/StabrixPricing.sol        reads Aqua balances, asks the oracle, checks the wallet
-│   ├── src/StabrixExtruction.sol     the same pricing on 1inch's official router
-│   ├── src/StabrixBatchTaker.sol     many LPs, both routers, one transaction
-│   ├── src/StabrixOracle.sol         Chainlink CRE consumer
+│   ├── src/HalcyonRouter.sol         SwapVM v1.0.2 plus opcodes 34 and 35
+│   ├── src/HalcyonMath.sol           the sphere AMM, closed form
+│   ├── src/HalcyonPricing.sol        reads Aqua balances, asks the oracle, checks the wallet
+│   ├── src/HalcyonExtruction.sol     the same pricing on 1inch's official router
+│   ├── src/HalcyonBatchTaker.sol     many LPs, both routers, one transaction
+│   ├── src/HalcyonOracle.sol         Chainlink CRE consumer
 │   └── test/                         unit, fuzz and Base fork suites
 ├── cre/depeg-sentinel/        Chainlink CRE workflow, Go
-├── sdk/                       @stabrix/sdk
+├── sdk/                       @halcyon/sdk
 │   ├── src/math.ts                   bigint port of the curve
 │   ├── src/split.ts                  64-slice router across every strategy
 │   ├── src/client.ts                 EVM client

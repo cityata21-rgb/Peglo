@@ -1,7 +1,7 @@
 Base Sepolia (chain 84532), after `npm run seed:testnet` added a Tight range of $5,000,000 per coin on the 1inch router.
 Cost is the dollar value lost against the oracle price, fees included. Liquidity is test coins.
 
-$ RPC_URL=https://base-sepolia-rpc.publicnode.com npm run costs -w @stabrix/ops
+$ RPC_URL=https://base-sepolia-rpc.publicnode.com npm run costs -w @halcyon/ops
 chain 84532, 4 ranges, block 55362166
 pair        size       out                  cost (bps)  legs
 USDC>DAI    $1,000     999.9 DAI            1.01        1
@@ -17,12 +17,12 @@ USDC>DAI    $100,000   71,863.23 DAI        250.02      3 (partial fill)
 
 Live trades from fresh wallets, each equal to its quote:
 
-$ npm run trade:testnet -w @stabrix/ops -- USDC DAI 10000
+$ npm run trade:testnet -w @halcyon/ops -- USDC DAI 10000
 trader 0x2A1530075EE9Ef866d8B42EB85B4464d958650D4
 swapped 10000 USDC for 9998.878535597934848022 DAI (quote 9998.878535597934848022), cost 1.12 bps over 1 leg(s)
 tx 0xe8c89fee79fec9cb8daaa142a622a409e00c1d579c22ed34b7968109bfd63003
 
-$ npm run trade:testnet -w @stabrix/ops -- USDC EURC 10000
+$ npm run trade:testnet -w @halcyon/ops -- USDC EURC 10000
 trader 0x97688F74eDad7340a67666013Cfc427dDDE23f27
 swapped 10000 USDC for 8965.676818 EURC (quote 8965.676818), cost 5.24 bps over 1 leg(s)
 tx 0x02cb7a187e5521a770386bb79b6ec95bcb15109785a4494c2e6c2e586dc5895d

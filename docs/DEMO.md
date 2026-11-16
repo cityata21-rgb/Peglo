@@ -6,7 +6,7 @@ Start the fork no more than an hour before recording; its Chainlink feeds are fr
 
 ```bash
 FORK_PORT=8556 DEPLOYMENT_NAME=base-fork-fx ./ops/devnet.sh
-npm run price-api -w @stabrix/ops
+npm run price-api -w @halcyon/ops
 cd app && NEXT_PUBLIC_DEV_ACCOUNTS=1 NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8556 DEPLOYMENT_NAME=base-fork-fx npx next dev -p 3000
 ```
 
