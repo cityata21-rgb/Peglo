@@ -1,6 +1,6 @@
 'use client'
 
-import { type Market, PRESETS, type PresetId, type TokenInfo, type Venue } from '@halcyon/sdk'
+import { type Market, PRESETS, type PresetId, type TokenInfo, type Venue } from '@peglo/sdk'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
@@ -11,7 +11,7 @@ import { Button, CoinDot, KindTag, Label, Panel, SectionHead, Skeleton, VenueTag
 import { CURRENCY } from '@/lib/coins'
 import { formatAmount, formatUsd, toUnits } from '@/lib/format'
 import { priceOf } from '@/lib/market'
-import { useBalances, useMarket, useHalcyon } from '@/lib/halcyon'
+import { useBalances, useMarket, usePeglo } from '@/lib/peglo'
 import {
   BACKSTOP_PRESETS,
   type BackstopPresetId,
@@ -103,7 +103,7 @@ function VenuePicker({ value, onChange }: { value: VenueId; onChange: (v: VenueI
     <div className="mt-3 grid gap-2.5 sm:grid-cols-2" role="radiogroup" aria-label="Venue">
       {(
         [
-          ['native', 'Halcyon router', 'SwapVM with Halcyon opcodes'],
+          ['native', 'Peglo router', 'SwapVM with Peglo opcodes'],
           ['official', '1inch router', "1inch's deployed SwapVM, via Extruction"],
         ] as const
       ).map(([id, title, sub]) => (
@@ -176,7 +176,7 @@ function venueOf(id: VenueId, target: string): Venue {
 }
 
 function RangeForm({ held, balances, market }: { held: TokenInfo[]; balances: bigint[] | undefined; market: Market | undefined }) {
-  const { deployment, client, wallet, kind } = useHalcyon()
+  const { deployment, client, wallet, kind } = usePeglo()
   const solana = kind === 'solana'
   const [picked, setPicked] = useState<string[] | null>(null)
   const [preset, setPreset] = useState<PresetId>('balanced')
@@ -214,7 +214,7 @@ function RangeForm({ held, balances, market }: { held: TokenInfo[]; balances: bi
       const config = client.buildRange(preset, perCoin, { tokens: chosen.map((t) => t.address) })
       progress(
         solana
-          ? `Approving the Halcyon program as delegate for ${chosen.length} coins, then opening the range`
+          ? `Approving the Peglo program as delegate for ${chosen.length} coins, then opening the range`
           : `Approving Aqua for ${chosen.length} coins, then shipping the range`,
       )
       const done = await client.ship(wallet, config, perCoin, venueOf(venue, deployment.extruction))
@@ -303,7 +303,7 @@ function RangeForm({ held, balances, market }: { held: TokenInfo[]; balances: bi
 }
 
 function BackstopForm({ held, balances, market }: { held: TokenInfo[]; balances: bigint[] | undefined; market: Market | undefined }) {
-  const { deployment, client, wallet, kind } = useHalcyon()
+  const { deployment, client, wallet, kind } = usePeglo()
   const solana = kind === 'solana'
   const tokens = deployment.tokens
   const defaultPay = held.filter((t) => t.symbol === 'USDC' || t.symbol === 'USDT')
@@ -350,7 +350,7 @@ function BackstopForm({ held, balances, market }: { held: TokenInfo[]; balances:
       const payoutCoins = `${payTokens.length} payout coin${payTokens.length > 1 ? 's' : ''}`
       progress(
         solana
-          ? `Approving the Halcyon program as delegate for ${payoutCoins}, then opening the backstop`
+          ? `Approving the Peglo program as delegate for ${payoutCoins}, then opening the backstop`
           : `Approving Aqua for ${payoutCoins}, then shipping the backstop`,
       )
       const done = await client.shipBackstop(wallet, config, amounts, venueOf(venue, deployment.backstop))
@@ -445,7 +445,7 @@ function BackstopForm({ held, balances, market }: { held: TokenInfo[]; balances:
 }
 
 function WalletPanel({ market, balances, mine }: { market: Market | undefined; balances: bigint[] | undefined; mine: LiveStrategy[] }) {
-  const { deployment, kind } = useHalcyon()
+  const { deployment, kind } = usePeglo()
   const walletUsd = deployment.tokens.reduce((s, t, k) => s + valueUsd(balances?.[k] ?? 0n, t.decimals, priceOf(market, t)), 0)
   const prices = market?.prices
   const inRanges = prices ? mine.filter((s) => s.kind === 'range').reduce((s, x) => s + strategyUsd(x, prices), 0) : 0
@@ -478,7 +478,7 @@ function WalletPanel({ market, balances, mine }: { market: Market | undefined; b
           </dl>
           <p className="caption mt-3">
             {kind === 'solana'
-              ? 'The Halcyon program is a token delegate, so one balance backs several strategies at once. Nothing moves until a trade fills, and you can spend these coins any time.'
+              ? 'The Peglo program is a token delegate, so one balance backs several strategies at once. Nothing moves until a trade fills, and you can spend these coins any time.'
               : 'Aqua lets one balance back several strategies at once. Nothing moves until a trade fills, and you can spend these coins any time.'}
           </p>
         </>
@@ -488,7 +488,7 @@ function WalletPanel({ market, balances, mine }: { market: Market | undefined; b
 }
 
 function StrategyCard({ s, market, onClose, busy }: { s: LiveStrategy; market: Market; onClose: () => void; busy: boolean }) {
-  const { client } = useHalcyon()
+  const { client } = usePeglo()
   const usd = strategyUsd(s, market.prices)
   const short = shortCoins(s, market.prices)
   const fill = s.kind === 'backstop' ? backstopFill(s, market.prices) : []
@@ -545,7 +545,7 @@ function StrategyCard({ s, market, onClose, busy }: { s: LiveStrategy; market: M
 }
 
 export default function LiquidityPage() {
-  const { deployment, client, signer, wallet, kind } = useHalcyon()
+  const { deployment, client, signer, wallet, kind } = usePeglo()
   const market = useMarket()
   const balances = useBalances(signer?.address)
   const [mode, setMode] = useState<Mode>('range')
@@ -583,7 +583,7 @@ export default function LiquidityPage() {
         <div className="rounded-xl border border-down/60 bg-down/10 px-5 py-4" role="note">
           <p className="text-[11px] font-medium tracking-[0.08em] text-down uppercase">Unaudited program on Solana mainnet</p>
           <p className="mt-1.5 text-[14px] leading-snug">
-            A strategy lets the Halcyon program pay takers straight from your wallet when trades fill. The program has not been audited, so only use amounts you can
+            A strategy lets the Peglo program pay takers straight from your wallet when trades fill. The program has not been audited, so only use amounts you can
             afford to lose, a few dollars at most. Close a strategy any time to revoke the approval and get its rent back.
           </p>
         </div>

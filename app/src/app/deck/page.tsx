@@ -6,8 +6,8 @@ import { DeckControls } from './controls'
 import './deck.css'
 
 export const metadata: Metadata = {
-  title: 'Halcyon pitch deck',
-  description: 'Halcyon: stablecoin FX and depeg backstops from wallet balances, live on Solana mainnet.',
+  title: 'Peglo pitch deck',
+  description: 'Peglo: stablecoin FX and depeg backstops from wallet balances, live on Solana mainnet.',
 }
 
 function Slide({ n, kicker, title, children }: { n: number; kicker?: string; title?: ReactNode; children?: ReactNode }) {
@@ -17,7 +17,7 @@ function Slide({ n, kicker, title, children }: { n: number; kicker?: string; tit
         <header className="slide-head">
           <span className="brand">
             <LogoMark className="mark" />
-            Halcyon
+            Peglo
           </span>
           <span>{String(n).padStart(2, '0')}</span>
         </header>
@@ -72,7 +72,7 @@ export default function Deck() {
           <header className="slide-head">
             <span className="brand">
               <LogoMark className="mark" />
-              Halcyon
+              Peglo
             </span>
             <span>Live on Solana mainnet</span>
           </header>
@@ -192,14 +192,14 @@ export default function Deck() {
         />
       </Slide>
 
-      <Slide n={8} kicker="Competition" title="Pools leave in a depeg. Halcyon stays and gets paid.">
+      <Slide n={8} kicker="Competition" title="Pools leave in a depeg. Peglo stays and gets paid.">
         <table className="cmp">
           <thead>
             <tr>
               <th />
               <th>Curve</th>
               <th>Orca, Meteora</th>
-              <th>Halcyon</th>
+              <th>Peglo</th>
             </tr>
           </thead>
           <tbody>
@@ -251,7 +251,7 @@ export default function Deck() {
         <Rows
           rows={[
             ['1', 'Seed with a few treasuries and market makers holding idle USDC and USDT.'],
-            ['2', 'Get routed by Solana aggregators so every USDC to EURC or BRZ trade can reach Halcyon.'],
+            ['2', 'Get routed by Solana aggregators so every USDC to EURC or BRZ trade can reach Peglo.'],
             ['3', 'Offer issuers a standing backstop and deep pairs against every other stablecoin.'],
             ['4', 'Publish the math, depeg simulations and live costs so anyone can check every number.'],
           ]}

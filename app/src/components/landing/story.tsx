@@ -206,7 +206,7 @@ const AQUA = [
   },
   {
     title: 'Two new instructions',
-    text: 'HalcyonTick (opcode 34) prices the sphere curve. HalcyonBackstop (opcode 35) buys a depegged coin only while Chainlink says it is broken.',
+    text: 'PegloTick (opcode 34) prices the sphere curve. PegloBackstop (opcode 35) buys a depegged coin only while Chainlink says it is broken.',
   },
   {
     title: 'Your official router',
@@ -231,7 +231,7 @@ const FLOW = [
   ['One EVM read', '9 Chainlink feeds + oracle'],
   ['Two price APIs', 'median across nodes'],
   ['Policy', 'halt · resume · push rates'],
-  ['Signed report', 'to HalcyonOracle'],
+  ['Signed report', 'to PegloOracle'],
   ['Every strategy', 'ranges and backstops'],
 ]
 
@@ -308,7 +308,7 @@ export function Story() {
               one wallet
             </>
           }
-          intro="Halcyon is an FX market made of wallets. You keep your coins, they earn spread, and when one coin breaks the same balance catches it."
+          intro="Peglo is an FX market made of wallets. You keep your coins, they earn spread, and when one coin breaks the same balance catches it."
         />
         <ol className="steps">
           {STEPS.map((st) => (
@@ -359,7 +359,7 @@ export function Story() {
               yourself
             </>
           }
-          intro="Both charts are computed in your browser by the Halcyon SDK, which matches the contracts to the wei."
+          intro="Both charts are computed in your browser by the Peglo SDK, which matches the contracts to the wei."
         />
         <div className="charts">
           <ImpactChart />
@@ -379,7 +379,7 @@ export function Story() {
               it was meant
             </>
           }
-          intro="Aqua's promise is that one balance can back many strategies without being locked. Halcyon is built entirely on that promise."
+          intro="Aqua's promise is that one balance can back many strategies without being locked. Peglo is built entirely on that promise."
         />
         <div className="grid3">
           {AQUA.map((c) => (
@@ -389,7 +389,7 @@ export function Story() {
             </article>
           ))}
         </div>
-        <div className="arch" aria-label="How one trade flows through Halcyon">
+        <div className="arch" aria-label="How one trade flows through Peglo">
           <div className="arch-row">
             <div className="node">
               <b>Trader</b>
@@ -402,13 +402,13 @@ export function Story() {
           </div>
           <p className="arch-link">one transaction</p>
           <div className="node strong">
-            <b>HalcyonBatchTaker</b>
+            <b>PegloBatchTaker</b>
             <span>splits the trade across every maker</span>
           </div>
           <p className="arch-link">each leg</p>
           <div className="arch-row">
             <div className="node">
-              <b>HalcyonRouter</b>
+              <b>PegloRouter</b>
               <span>SwapVM, opcodes 34 and 35</span>
             </div>
             <div className="node">
@@ -418,7 +418,7 @@ export function Story() {
           </div>
           <p className="arch-link">same pricing</p>
           <div className="node strong">
-            <b>HalcyonPricing · HalcyonBackstopPricing</b>
+            <b>PegloPricing · PegloBackstopPricing</b>
             <span>checks the maker's wallet, asks the oracle</span>
           </div>
           <div className="arch-row">
@@ -427,7 +427,7 @@ export function Story() {
               <span>pulls from the maker's wallet on fill</span>
             </div>
             <div className="node">
-              <b>HalcyonOracle</b>
+              <b>PegloOracle</b>
               <span>rates and halts from Chainlink CRE</span>
             </div>
           </div>
@@ -446,7 +446,7 @@ export function Story() {
               not just an alarm
             </>
           }
-          intro="The workflow sets the FX rates every swap uses, and decides when a coin is broken. Without it, Halcyon cannot price a euro."
+          intro="The workflow sets the FX rates every swap uses, and decides when a coin is broken. Without it, Peglo cannot price a euro."
         />
         <ol className="flow">
           {FLOW.map(([a, b]) => (
@@ -474,7 +474,7 @@ export function Story() {
           eb="Versus"
           title={
             <>
-              Where Halcyon{' '}
+              Where Peglo{' '}
               <br />
               stands
             </>
@@ -488,7 +488,7 @@ export function Story() {
                 <th scope="col">Uniswap v3</th>
                 <th scope="col">Curve</th>
                 <th scope="col">Other builds of the paper</th>
-                <th scope="col">Halcyon</th>
+                <th scope="col">Peglo</th>
               </tr>
             </thead>
             <tbody>

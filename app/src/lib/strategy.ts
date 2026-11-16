@@ -1,4 +1,4 @@
-import { type LiveBackstop, type LiveRange, PRESETS, type PresetId, type PriceInfo, backstopRoom } from '@halcyon/sdk'
+import { type LiveBackstop, type LiveRange, PRESETS, type PresetId, type PriceInfo, backstopRoom } from '@peglo/sdk'
 
 export type LiveStrategy = LiveRange | LiveBackstop
 

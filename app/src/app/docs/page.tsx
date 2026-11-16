@@ -133,9 +133,9 @@ function QA({ q, children }: { q: string; children: ReactNode }) {
   )
 }
 
-const SDK = `import { HalcyonClient, WAD } from '@halcyon/sdk'
+const SDK = `import { PegloClient, WAD } from '@peglo/sdk'
 
-const client = new HalcyonClient(publicClient, deployment)
+const client = new PegloClient(publicClient, deployment)
 
 const market = await client.market()
 const quote = client.quoteExactIn(market, USDC, EURC, 1_000_000_000n)
@@ -154,7 +154,7 @@ const LOCAL = `npm install
 (cd contracts && npm install)
 
 FORK_PORT=8556 DEPLOYMENT_NAME=base-fork-fx ./ops/devnet.sh
-npm run price-api -w @halcyon/ops
+npm run price-api -w @peglo/ops
 cd app && NEXT_PUBLIC_DEV_ACCOUNTS=1 NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8556 \\
   DEPLOYMENT_NAME=base-fork-fx npx next dev -p 3000
 
@@ -162,7 +162,7 @@ cd cre && cre workflow simulate depeg-sentinel -T fork-settings --broadcast \\
   --non-interactive --trigger-index 0
 
 cd contracts && forge test
-npm test -w @halcyon/sdk
+npm test -w @peglo/sdk
 cd cre/depeg-sentinel && go test ./...`
 
 const FEEDS: [string, string, string][] = [
@@ -192,7 +192,7 @@ export default function DocsPage() {
   return (
     <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
       <aside className="lg:sticky lg:top-28 lg:max-h-[calc(100dvh-8rem)] lg:self-start lg:overflow-y-auto">
-        <p className="num text-[14px] tracking-[0.08em] uppercase">Halcyon · Docs</p>
+        <p className="num text-[14px] tracking-[0.08em] uppercase">Peglo · Docs</p>
         <nav aria-label="Docs chapters" className="ink-card mt-4 p-3 lg:mt-6">
           <ul className="grid grid-cols-2 gap-x-3 lg:grid-cols-1">
             {CHAPTERS.map(([id, label]) => (
@@ -210,13 +210,13 @@ export default function DocsPage() {
         <header>
           <h1 className="title text-[24px] leading-[0.95] sm:text-[28px]">Documentation</h1>
           <p className="mt-4 max-w-[40em] text-[15px] leading-snug text-muted">
-            How Halcyon prices stablecoin FX on 1inch Aqua, protects liquidity providers when a coin breaks, and uses Chainlink CRE for rates and halts.
+            How Peglo prices stablecoin FX on 1inch Aqua, protects liquidity providers when a coin breaks, and uses Chainlink CRE for rates and halts.
           </p>
         </header>
 
         <Section id="overview">
           <P>
-            Halcyon turns any wallet holding stablecoins into a market maker without a deposit. A liquidity provider (a maker) ships strategies to 1inch Aqua. Aqua only
+            Peglo turns any wallet holding stablecoins into a market maker without a deposit. A liquidity provider (a maker) ships strategies to 1inch Aqua. Aqua only
             records what each strategy may use; tokens leave the wallet only when a trade fills, straight to the trader.
           </P>
           <P>One wallet balance can do two jobs at once:</P>
@@ -234,7 +234,7 @@ export default function DocsPage() {
           />
           <P>
             A Chainlink CRE workflow sets the FX rates every swap uses and decides when a coin is broken. Trades are split across every maker and settle on both the
-            Halcyon router and 1inch&apos;s official router in one transaction.
+            Peglo router and 1inch&apos;s official router in one transaction.
           </P>
           <H3>A worked example</H3>
           <P>
@@ -245,7 +245,7 @@ export default function DocsPage() {
 
         <Section id="solana">
           <P>
-            The same two jobs run as a native Solana program. Opening a strategy approves the Halcyon program as an SPL token delegate for the coins it uses, the Solana
+            The same two jobs run as a native Solana program. Opening a strategy approves the Peglo program as an SPL token delegate for the coins it uses, the Solana
             version of an Aqua allowance. Coins stay in your own token accounts. When a trade fills, the program takes the taker&apos;s coin into your wallet and pays the
             other coin out of it, in one instruction per leg. Ranges use the same sphere curve and backstops the same discount curve as the EVM contracts.
           </P>
@@ -306,7 +306,7 @@ export default function DocsPage() {
               [<C key="d">dock</C>, 'Closes a strategy. Aqua forgets its amounts; there is nothing to withdraw.'],
               [<C key="p">pull / push</C>, 'During a fill Aqua pulls the output coin from the maker wallet to the taker and pushes the input coin into the maker wallet.'],
               ['Strategy balance', "Aqua's record of what a strategy may still use. It moves with every fill, so it is the range's live reserves."],
-              ['Venue', 'Where a strategy is priced: the Halcyon router (native opcodes) or 1inch AquaSwapVMRouter (through Extruction).'],
+              ['Venue', 'Where a strategy is priced: the Peglo router (native opcodes) or 1inch AquaSwapVMRouter (through Extruction).'],
               ['Shared liquidity ratio', 'Value of all strategies a wallet backs, divided by the value of the wallet. Above 1 means one balance is doing more than one job.'],
               ['Spendable', "The lower of a maker's wallet balance and its Aqua allowance. A fill never asks for more; the router skips a maker that is short."],
               ['Halt', 'A flag on a coin set by Chainlink CRE or the guardian. Ranges refuse a halted coin as input; only backstops buy it.'],
@@ -394,7 +394,7 @@ export default function DocsPage() {
               'For a healthy input coin only FX ranges quote. For a halted input coin only backstops quote.',
               'The trade is cut into 64 slices. Each slice goes to the strategy that pays the most for it; slices halve near the limits so nothing is left unfilled that could be filled.',
               "A strategy drops out when the next slice would hit its edge, its exposure cap, or the maker's spendable balance. Your own strategies are skipped when you trade.",
-              'HalcyonBatchTaker pulls the total input once, fills every leg on its router, then checks your minimum output and a 10 minute deadline. Either every leg fills or the whole trade reverts.',
+              'PegloBatchTaker pulls the total input once, fills every leg on its router, then checks your minimum output and a 10 minute deadline. Either every leg fills or the whole trade reverts.',
               'Because the SDK runs the same bigint math as the contracts, quotes equal on-chain results to the wei.',
             ]}
           />
@@ -405,7 +405,7 @@ export default function DocsPage() {
             items={[
               'Each range charges its width fee on the input of every fill: 0.01%, 0.04% or 0.10% when both coins are dollar coins, and 0.05%, 0.10% or 0.30% when either is EURC, BRZ or IDRX.',
               'The whole input lands in the maker wallet while the price is computed on the input after the fee, so the fee grows the range and compounds to the LP.',
-              'Halcyon takes no protocol fee and has no token.',
+              'Peglo takes no protocol fee and has no token.',
               'Backstops do not charge a fee; they earn their discount.',
               "The Pool page sums fees paid to LPs over the last 24 hours, fill by fill, from the routers' Swapped events.",
             ]}
@@ -436,7 +436,7 @@ export default function DocsPage() {
         <Section id="cre">
           <P>
             The workflow (<C>cre/depeg-sentinel</C>, Go) runs every 30 seconds. It reads every oracle status and Chainlink feed in one Multicall3 call, fetches CoinGecko and
-            DefiLlama with a median across nodes, decides, and writes one signed report to <C>HalcyonOracle</C>.
+            DefiLlama with a median across nodes, decides, and writes one signed report to <C>PegloOracle</C>.
           </P>
           <Table
             head={['Rule', 'Value']}
@@ -495,18 +495,18 @@ export default function DocsPage() {
           <Table
             head={['Contract', 'Role']}
             rows={[
-              ['HalcyonRouter', 'SwapVM v1.0.2 Aqua router with two new instructions: HalcyonTick (opcode 34) and HalcyonBackstop (opcode 35).'],
-              ['HalcyonExtruction', 'Range pricing for the official 1inch router, reached through Extruction (opcode 32).'],
-              ['HalcyonBackstop', 'Backstop pricing for both routers.'],
-              ['HalcyonOracle', 'Chainlink CRE consumer: rates, halts, depeg prices, feed bounds and guardian.'],
-              ['HalcyonBatchTaker', 'Fills many legs across both routers in one transaction with a minimum output and deadline.'],
-              ['HalcyonLens', 'Builds orders and reads strategy balances and spendable amounts.'],
+              ['PegloRouter', 'SwapVM v1.0.2 Aqua router with two new instructions: PegloTick (opcode 34) and PegloBackstop (opcode 35).'],
+              ['PegloExtruction', 'Range pricing for the official 1inch router, reached through Extruction (opcode 32).'],
+              ['PegloBackstop', 'Backstop pricing for both routers.'],
+              ['PegloOracle', 'Chainlink CRE consumer: rates, halts, depeg prices, feed bounds and guardian.'],
+              ['PegloBatchTaker', 'Fills many legs across both routers in one transaction with a minimum output and deadline.'],
+              ['PegloLens', 'Builds orders and reads strategy balances and spendable amounts.'],
             ]}
           />
           <P>
             SwapVM caps instruction arguments at 255 bytes, so configs are packed. A range is n, the token addresses, their decimals, the floor (16 bytes), the edge ratio (8),
             the USD fee (2), the FX fee (2), the exposure cap (2) and the oracle (20): 1 + 21n + 50 bytes. A backstop swaps the range fields for the two discounts and the cap:
-            1 + 21n + 40 bytes. That allows 9 coins on the Halcyon router and 8 through Extruction, where the target address takes 20 more bytes.
+            1 + 21n + 40 bytes. That allows 9 coins on the Peglo router and 8 through Extruction, where the target address takes 20 more bytes.
           </P>
           <H3>This app&apos;s deployment</H3>
           <DocsDeployment />
@@ -533,14 +533,14 @@ export default function DocsPage() {
           <Table mono head={['Feed', 'Address', 'Used for']} rows={FEEDS} />
           <H3>Base Sepolia</H3>
           <P>
-            1inch has not deployed Aqua or the SwapVM router on Base Sepolia, so the deploy script deploys their unmodified source next to Halcyon, with test coins and
+            1inch has not deployed Aqua or the SwapVM router on Base Sepolia, so the deploy script deploys their unmodified source next to Peglo, with test coins and
             testnet FX feeds synced from Base mainnet Chainlink. Chainlink&apos;s CRE simulation forwarder is <C>0x82300bd7c3958625581cc2F77bC6464dcEcDF3e5</C>.
           </P>
         </Section>
 
         <Section id="sdk">
           <P>
-            <C>@halcyon/sdk</C> (TypeScript, viem) reads the market, quotes, routes and ships. Amounts are bigints in token units; USD amounts use 18 decimals.
+            <C>@peglo/sdk</C> (TypeScript, viem) reads the market, quotes, routes and ships. Amounts are bigints in token units; USD amounts use 18 decimals.
           </P>
           <Code>{SDK}</Code>
           <Table
@@ -631,7 +631,7 @@ export default function DocsPage() {
             <QA q="Who pays gas?">Takers pay for swaps. Makers pay for approvals, ship and dock. Nobody pays to keep a strategy open.</QA>
             <QA q="Why at most 8 coins in one strategy?">SwapVM caps instruction arguments at 255 bytes. More coins are covered by more strategies, combined by the router.</QA>
             <QA q="Is there a token or a protocol fee?">No. LPs keep every fee their ranges earn.</QA>
-            <QA q="What is Extruction?">A SwapVM instruction that calls out to another contract for pricing. It lets 1inch&apos;s official router price Halcyon strategies.</QA>
+            <QA q="What is Extruction?">A SwapVM instruction that calls out to another contract for pricing. It lets 1inch&apos;s official router price Peglo strategies.</QA>
           </div>
         </Section>
       </article>

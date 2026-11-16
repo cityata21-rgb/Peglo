@@ -26,7 +26,7 @@ export function DeckControls() {
   return (
     <div className="deck-controls">
       <Link href="/">Home</Link>
-      <a href="/halcyon-deck.pdf" download>
+      <a href="/peglo-deck.pdf" download>
         Download PDF
       </a>
     </div>

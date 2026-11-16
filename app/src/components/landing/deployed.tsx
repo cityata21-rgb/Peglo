@@ -51,17 +51,17 @@ export function Deployed() {
   const net = NETWORKS[d.chainId]!
   const official = d.officialAqua !== false
   const solanaRows: [string, string, string][] = [
-    ['Halcyon program', 'FX ranges and backstops, one Solana program', d.programId ?? ''],
+    ['Peglo program', 'FX ranges and backstops, one Solana program', d.programId ?? ''],
     ['Oracle', 'Pyth reference plus sentinel reports, guardian halts', d.oracle],
     ...d.tokens.map((t): [string, string, string] => [t.symbol, 'Coin mint', t.address]),
   ]
   const rows: [string, string, string][] = d.kind === 'solana' ? solanaRows : [
-    ['HalcyonRouter', 'SwapVM router with opcodes 34 and 35', d.router],
-    ['HalcyonExtruction', 'FX range pricing for the 1inch router', d.extruction],
-    ['HalcyonBackstop', 'Backstop pricing for the 1inch router', d.backstop],
-    ['HalcyonOracle', 'Chainlink CRE consumer', d.oracle],
-    ['HalcyonBatchTaker', 'One trade across both routers', d.batchTaker],
-    ['HalcyonLens', 'Order builder and balances', d.lens],
+    ['PegloRouter', 'SwapVM router with opcodes 34 and 35', d.router],
+    ['PegloExtruction', 'FX range pricing for the 1inch router', d.extruction],
+    ['PegloBackstop', 'Backstop pricing for the 1inch router', d.backstop],
+    ['PegloOracle', 'Chainlink CRE consumer', d.oracle],
+    ['PegloBatchTaker', 'One trade across both routers', d.batchTaker],
+    ['PegloLens', 'Order builder and balances', d.lens],
     ['Aqua', official ? '1inch, official deployment' : '1inch source, deployed by us', d.aqua],
     ['AquaSwapVMRouter', official ? '1inch, official deployment' : '1inch source, deployed by us', d.officialRouter],
   ]

@@ -11,10 +11,10 @@ import {
   type PriceInfo,
   type Quote,
   type RangeConfig,
-  HalcyonClient,
+  PegloClient,
   type TokenInfo,
-} from '@halcyon/sdk'
-import { type SolanaDeployment, type SolanaSigner, SolanaHalcyonClient } from '@halcyon/sdk/solana'
+} from '@peglo/sdk'
+import { type SolanaDeployment, type SolanaSigner, SolanaPegloClient } from '@peglo/sdk/solana'
 import { Connection } from '@solana/web3.js'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -65,7 +65,7 @@ export interface WalletChoice {
   icon?: string
 }
 
-export interface HalcyonApi {
+export interface PegloApi {
   readonly tokens: TokenInfo[]
   token(address: string): TokenInfo
   market(): Promise<Market>
@@ -83,14 +83,14 @@ export interface HalcyonApi {
   balancesOf(owner: string): Promise<bigint[]>
 }
 
-interface HalcyonContext {
+interface PegloContext {
   kind: 'evm' | 'solana'
   deployment: Deployment
   rpcUrl: string
   chain: Chain
   publicClient: PublicClient | null
-  client: HalcyonApi
-  solana: SolanaHalcyonClient | null
+  client: PegloApi
+  solana: SolanaPegloClient | null
   signer: Signer | null
   wallet: AppWallet | null
   setSigner: (s: Signer | null) => void
@@ -99,7 +99,7 @@ interface HalcyonContext {
   disconnect: () => void
 }
 
-const Ctx = createContext<HalcyonContext | null>(null)
+const Ctx = createContext<PegloContext | null>(null)
 
 interface RawDeployment extends Omit<Deployment, 'fromBlock'> {
   kind?: 'solana'
@@ -150,7 +150,7 @@ async function fetchDeployment(network: string): Promise<Loaded> {
   }
 }
 
-const NETWORK_KEY = 'halcyon.network'
+const NETWORK_KEY = 'peglo.network'
 
 interface NetworkContext {
   network: string | null
@@ -200,7 +200,7 @@ function SolanaInner({ deployment, sol, rpcUrl, children }: { deployment: Deploy
   const chain = useChain(deployment, rpcUrl)
   const solana = useMemo(() => {
     const endpoint = rpcUrl.startsWith('/') ? `${window.location.origin}${rpcUrl}` : rpcUrl
-    return new SolanaHalcyonClient(new Connection(endpoint, 'confirmed'), sol)
+    return new SolanaPegloClient(new Connection(endpoint, 'confirmed'), sol)
   }, [rpcUrl, sol])
   const options = useSolanaWallets(true)
   const [signer, setSigner] = useState<Signer | null>(null)
@@ -262,13 +262,13 @@ function SolanaInner({ deployment, sol, rpcUrl, children }: { deployment: Deploy
     rememberSolanaWallet(null)
   }
 
-  const value: HalcyonContext = {
+  const value: PegloContext = {
     kind: 'solana',
     deployment,
     rpcUrl,
     chain,
     publicClient: null,
-    client: solana as unknown as HalcyonApi,
+    client: solana as unknown as PegloApi,
     solana,
     signer,
     wallet,
@@ -286,7 +286,7 @@ function Inner({ deployment, rpcUrl, children }: { deployment: Deployment; rpcUr
     () => createPublicClient({ chain, transport: http(rpcUrl, { batch: true }) }) as PublicClient,
     [chain, rpcUrl],
   )
-  const client = useMemo(() => new HalcyonClient(publicClient, deployment), [publicClient, deployment])
+  const client = useMemo(() => new PegloClient(publicClient, deployment), [publicClient, deployment])
 
   const [signer, setSigner] = useState<Signer | null>(null)
   const [provider, setProvider] = useState<Eip1193 | null>(null)
@@ -371,13 +371,13 @@ function Inner({ deployment, rpcUrl, children }: { deployment: Deployment; rpcUr
     rememberWallet(null)
   }
 
-  const value: HalcyonContext = {
+  const value: PegloContext = {
     kind: 'evm',
     deployment,
     rpcUrl,
     chain,
     publicClient,
-    client: client as unknown as HalcyonApi,
+    client: client as unknown as PegloApi,
     solana: null,
     signer,
     wallet,
@@ -445,7 +445,7 @@ export function RequireDeployment({ children }: { children: ReactNode }) {
   )
 }
 
-export function HalcyonProvider({ children }: { children: ReactNode }) {
+export function PegloProvider({ children }: { children: ReactNode }) {
   const [network, setNetwork] = useState<string | null>(null)
   const [loaded, setLoaded] = useState<{ current: string | null; available: string[] }>({ current: null, available: [] })
   const [qc, setQc] = useState(newQueryClient)
@@ -471,35 +471,35 @@ export function HalcyonProvider({ children }: { children: ReactNode }) {
   )
 }
 
-export function useMaybeHalcyon() {
+export function useMaybePeglo() {
   return useContext(Ctx)
 }
 
-export function useHalcyon() {
+export function usePeglo() {
   const ctx = useContext(Ctx)
-  if (!ctx) throw new Error('useHalcyon outside provider')
+  if (!ctx) throw new Error('usePeglo outside provider')
   return ctx
 }
 
-const usePoll = () => (useHalcyon().kind === 'solana' ? POLL_MS * 4 : POLL_MS)
+const usePoll = () => (usePeglo().kind === 'solana' ? POLL_MS * 4 : POLL_MS)
 
 export function useRanges() {
-  const { client } = useHalcyon()
+  const { client } = usePeglo()
   return useQuery({ queryKey: ['ranges'], queryFn: () => client.listRanges(), refetchInterval: usePoll() })
 }
 
 export function useMarket() {
-  const { client } = useHalcyon()
+  const { client } = usePeglo()
   return useQuery({ queryKey: ['market'], queryFn: () => client.market(), refetchInterval: usePoll() })
 }
 
 export function useOracleStatus() {
-  const { client } = useHalcyon()
+  const { client } = usePeglo()
   return useQuery({ queryKey: ['oracle-status'], queryFn: () => client.oracleStatus(), refetchInterval: usePoll() })
 }
 
 export function useActivity() {
-  const { deployment, publicClient, solana } = useHalcyon()
+  const { deployment, publicClient, solana } = usePeglo()
   return useQuery({
     queryKey: ['activity', deployment.batchTaker],
     queryFn: () => (solana ? fetchSolanaActivity(solana) : fetchActivity(publicClient!, deployment)),
@@ -508,7 +508,7 @@ export function useActivity() {
 }
 
 export function useBalances(owner: Address | undefined) {
-  const { client } = useHalcyon()
+  const { client } = usePeglo()
   return useQuery({
     queryKey: ['balances', owner],
     queryFn: () => client.balancesOf(owner!),
@@ -534,7 +534,7 @@ const feedAbi = [
 ] as const
 
 export function useChainlinkPrices() {
-  const { deployment, publicClient } = useHalcyon()
+  const { deployment, publicClient } = usePeglo()
   return useQuery({
     queryKey: ['feeds', deployment.chainId],
     enabled: deployment.chainId === 8453,

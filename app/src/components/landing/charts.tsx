@@ -1,6 +1,6 @@
 'use client'
 
-import { PRESETS, type PresetId } from '@halcyon/sdk'
+import { PRESETS, type PresetId } from '@peglo/sdk'
 import { useEffect, useMemo, useState } from 'react'
 import { BACKSTOP_PRESETS } from '@/lib/strategy'
 import { type DepegPoint, type ImpactPoint, backstopPay, depegCurve, impactCurve } from '@/lib/sim'
@@ -99,7 +99,7 @@ export function ImpactChart() {
           })}
         {!curves && (
           <text x={W / 2} y={H / 2} className="ch-tick" textAnchor="middle">
-            computing with the Halcyon SDK
+            computing with the Peglo SDK
           </text>
         )}
       </svg>
@@ -138,7 +138,7 @@ export function ImpactChart() {
 const DEPEG_LINES: { key: keyof Omit<DepegPoint, 'price'>; label: string; color: string; dash?: string }[] = [
   { key: 'open', label: 'Range without an edge', color: RED, dash: '6 5' },
   { key: 'halted', label: 'With the CRE halt at $0.97', color: GOLD },
-  { key: 'edge', label: 'Halcyon range', color: INK, dash: '10 6' },
+  { key: 'edge', label: 'Peglo range', color: INK, dash: '10 6' },
   { key: 'hold', label: 'Just holding the coins', color: MUTED, dash: '2 5' },
 ]
 
@@ -234,7 +234,7 @@ export function DepegChart() {
             DEPEG_LINES.map((l) => <circle key={l.key} cx={x(price)} cy={y(now[l.key])} r={4.5} style={{ fill: l.color }} />)}
           {!data && (
             <text x={W / 2} y={H / 2} className="ch-tick" textAnchor="middle">
-              computing with the Halcyon SDK
+              computing with the Peglo SDK
             </text>
           )}
         </svg>

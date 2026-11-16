@@ -4,8 +4,8 @@ import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
-  title: 'Halcyon litepaper',
-  description: 'The math behind Halcyon: a sphere AMM over wallet balances, depeg backstops with a path-independent discount, and the oracle policy that decides when a stablecoin is broken.',
+  title: 'Peglo litepaper',
+  description: 'The math behind Peglo: a sphere AMM over wallet balances, depeg backstops with a path-independent discount, and the oracle policy that decides when a stablecoin is broken.',
 }
 
 const SECTIONS: [string, string][] = [
@@ -111,7 +111,7 @@ export default function Litepaper() {
         <header>
           <p className="font-mono text-[10.5px] tracking-[0.08em] text-muted uppercase">Litepaper · v1 · November 2026</p>
           <h1 className="title mt-3 text-[30px] leading-[1.05] sm:text-[44px]">
-            Halcyon: liquidity
+            Peglo: liquidity
             <br />
             that never leaves
           </h1>
@@ -123,10 +123,10 @@ export default function Litepaper() {
 
         <Section id="abstract">
           <P>
-            Halcyon is a market for stablecoins built on two strategy types over the same wallet balance. An <b>FX range</b> prices up to eight
+            Peglo is a market for stablecoins built on two strategy types over the same wallet balance. An <b>FX range</b> prices up to eight
             stablecoins on one concentrated sphere curve, with dollar coins at $1 and non-dollar coins such as EURC and BRZ at live FX rates. A{' '}
             <b>peg backstop</b> stays dormant until an oracle halts a broken coin, then buys it at a discount that grows with size and is
-            independent of how a seller splits their trade. Liquidity providers never deposit: on Solana a strategy approves the Halcyon program as
+            independent of how a seller splits their trade. Liquidity providers never deposit: on Solana a strategy approves the Peglo program as
             an SPL token delegate, and on Base it is a 1inch Aqua allowance. This paper gives the pricing math, the safety checks every swap
             passes, the depeg policy and the implementation that is live on Solana mainnet.
           </P>
@@ -138,7 +138,7 @@ export default function Litepaper() {
             the one moment that matters: when a coin depegs, arbitrageurs sell the broken coin into the pool and withdraw the healthy ones. LPs end
             the day holding the broken coin, and the market loses its liquidity when holders need it most.
           </P>
-          <P>Halcyon separates two jobs that pools merge into one:</P>
+          <P>Peglo separates two jobs that pools merge into one:</P>
           <Bullets
             items={[
               <>
@@ -324,7 +324,7 @@ export default function Litepaper() {
             price at $1 and need no update.
           </P>
           <P>
-            A reporter (Chainlink CRE on Base, the Halcyon sentinel on Solana) reads several independent sources and applies one policy. Let{' '}
+            A reporter (Chainlink CRE on Base, the Peglo sentinel on Solana) reads several independent sources and applies one policy. Let{' '}
             <M>{'\\delta_{\\text{api}}'}</M> be the smallest deviation from peg across the offchain APIs (so every API must agree) and{' '}
             <M>{'\\delta_{\\text{feed}}'}</M> the deviation of the market feed:
           </P>
@@ -351,7 +351,7 @@ export default function Litepaper() {
           <H3>Base</H3>
           <Bullets
             items={[
-              'Two new 1inch SwapVM instructions: HalcyonTick (opcode 34) for ranges and HalcyonBackstop (opcode 35).',
+              'Two new 1inch SwapVM instructions: PegloTick (opcode 34) for ranges and PegloBackstop (opcode 35).',
               'Both also run on 1inch’s official AquaSwapVMRouter through its Extruction opcode, with no 1inch contract modified.',
               'An 8-coin range config packs into 219 bytes, under SwapVM’s 255-byte argument limit.',
               'A Chainlink CRE workflow in Go reports rates and halts with consensus across nodes.',

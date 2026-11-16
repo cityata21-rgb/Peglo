@@ -8,7 +8,7 @@ import { type Activity, activityGroup } from '@/lib/activity'
 import { explorerFor } from '@/lib/chain'
 import { DEV_ACCOUNTS } from '@/lib/config'
 import { formatAmount, formatRate, shortAddress } from '@/lib/format'
-import { useActivity, useHalcyon } from '@/lib/halcyon'
+import { useActivity, usePeglo } from '@/lib/peglo'
 
 type Filter = 'all' | 'swaps' | 'liquidity' | 'oracle'
 
@@ -42,7 +42,7 @@ function TagFor({ a, oracle }: { a: Activity; oracle: string }) {
 }
 
 export default function ActivityPage() {
-  const { deployment, kind } = useHalcyon()
+  const { deployment, kind } = usePeglo()
   const activity = useActivity()
   const [filter, setFilter] = useState<Filter>('all')
   const explorer = DEV_ACCOUNTS ? undefined : explorerFor(deployment.chainId)
@@ -117,7 +117,7 @@ export default function ActivityPage() {
     }
     const what = a.strategy === 'backstop' ? 'Backstop' : a.strategy === 'range' ? 'FX range' : 'Strategy'
     const venue =
-      kind === 'solana' ? 'Solana program' : a.app.toLowerCase() === deployment.officialRouter.toLowerCase() ? '1inch router' : 'Halcyon router'
+      kind === 'solana' ? 'Solana program' : a.app.toLowerCase() === deployment.officialRouter.toLowerCase() ? '1inch router' : 'Peglo router'
     return (
       <>
         {what} {a.type === 'ship' ? (a.strategy === 'backstop' ? 'pledged' : 'opened') : 'closed'} by <Addr address={a.maker} />

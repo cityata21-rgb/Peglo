@@ -2,27 +2,27 @@
 
 import { CHAIN_NAMES as NAMES, explorerFor } from '@/lib/chain'
 import { DEV_ACCOUNTS } from '@/lib/config'
-import { useMaybeHalcyon } from '@/lib/halcyon'
+import { useMaybePeglo } from '@/lib/peglo'
 
 export function DocsDeployment() {
-  const ctx = useMaybeHalcyon()
+  const ctx = useMaybePeglo()
   if (!ctx) return <p className="text-[14px] text-muted">No deployment is loaded in this app yet.</p>
   const d = ctx.deployment
   const explorer = DEV_ACCOUNTS ? undefined : explorerFor(d.chainId)
   const where = DEV_ACCOUNTS ? `a local fork of ${NAMES[d.chainId] ?? `chain ${d.chainId}`}` : (NAMES[d.chainId] ?? `chain ${d.chainId}`)
   const rows: [string, string][] = ctx.solana
     ? [
-        ['Halcyon program', ctx.solana.deployment.programId],
+        ['Peglo program', ctx.solana.deployment.programId],
         ['Oracle', ctx.solana.deployment.oracle],
         ...d.tokens.map((t): [string, string] => [`${t.symbol} mint`, t.address]),
       ]
     : [
-    ['HalcyonRouter', d.router],
-    ['HalcyonExtruction', d.extruction],
-    ['HalcyonBackstop', d.backstop],
-    ['HalcyonOracle', d.oracle],
-    ['HalcyonBatchTaker', d.batchTaker],
-    ['HalcyonLens', d.lens],
+    ['PegloRouter', d.router],
+    ['PegloExtruction', d.extruction],
+    ['PegloBackstop', d.backstop],
+    ['PegloOracle', d.oracle],
+    ['PegloBatchTaker', d.batchTaker],
+    ['PegloLens', d.lens],
     ['Aqua', d.aqua],
     ['AquaSwapVMRouter', d.officialRouter],
   ]

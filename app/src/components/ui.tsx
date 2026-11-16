@@ -1,6 +1,6 @@
 'use client'
 
-import type { TokenInfo } from '@halcyon/sdk'
+import type { TokenInfo } from '@peglo/sdk'
 import { ChevronDown, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
@@ -163,7 +163,7 @@ export function Tag({ children, dot }: { children: ReactNode; dot?: string }) {
 
 export function VenueTag({ kind, solana = false }: { kind: 'native' | 'official'; solana?: boolean }) {
   if (kind === 'official') return <Tag dot="var(--color-series-lime)">1inch router</Tag>
-  return <Tag dot="var(--color-violet)">{solana ? 'Solana program' : 'Halcyon router'}</Tag>
+  return <Tag dot="var(--color-violet)">{solana ? 'Solana program' : 'Peglo router'}</Tag>
 }
 
 export function KindTag({ kind }: { kind: 'range' | 'backstop' }) {

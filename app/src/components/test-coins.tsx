@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { encodeFunctionData, parseAbi } from 'viem'
 import { Button } from '@/components/ui'
 import { DEV_ACCOUNTS } from '@/lib/config'
-import { type Wallet, useBalances, useMarket, useHalcyon } from '@/lib/halcyon'
+import { type Wallet, useBalances, useMarket, usePeglo } from '@/lib/peglo'
 
 const MULTICALL3 = '0xcA11bde05977b3631167028862bE2a173976CA11'
 export const SEPOLIA_FAUCET = 'https://portal.cdp.coinbase.com/products/faucet'
@@ -25,7 +25,7 @@ function reason(e: unknown): string {
 }
 
 export function useTestCoins() {
-  const { deployment, wallet, signer, publicClient, solana } = useHalcyon()
+  const { deployment, wallet, signer, publicClient, solana } = usePeglo()
   const market = useMarket()
   const qc = useQueryClient()
   const [busy, setBusy] = useState(false)
@@ -66,7 +66,7 @@ export function useTestCoins() {
 }
 
 export function TestCoinsNotice() {
-  const { signer, publicClient, solana } = useHalcyon()
+  const { signer, publicClient, solana } = usePeglo()
   const { available, mint, busy, error, faucetUrl, onSolana } = useTestCoins()
   const balances = useBalances(available ? signer?.address : undefined)
   const gas = useQuery({

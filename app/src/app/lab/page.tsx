@@ -1,6 +1,6 @@
 'use client'
 
-import { type TokenInfo, halcyonBatchTakerAbi, halcyonOracleAbi } from '@halcyon/sdk'
+import { type TokenInfo, pegloBatchTakerAbi, pegloOracleAbi } from '@peglo/sdk'
 import { useQuery } from '@tanstack/react-query'
 import { Check, Copy } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -22,7 +22,7 @@ import {
   useChainlinkPrices,
   useMarket,
   useOracleStatus,
-  useHalcyon, type Wallet } from '@/lib/halcyon'
+  usePeglo, type Wallet } from '@/lib/peglo'
 import { type LiveStrategy, strategyUsd, valueUsd } from '@/lib/strategy'
 import { useTx } from '@/lib/tx'
 
@@ -63,11 +63,11 @@ function Copyable({ text }: { text: string }) {
 }
 
 function labelOf(s: LiveStrategy) {
-  return `${shortAddress(s.maker)} ${s.kind === 'backstop' ? 'backstop' : 'range'} · ${s.venue.kind === 'official' ? '1inch' : 'Halcyon'}`
+  return `${shortAddress(s.maker)} ${s.kind === 'backstop' ? 'backstop' : 'range'} · ${s.venue.kind === 'official' ? '1inch' : 'Peglo'}`
 }
 
 export default function LabPage() {
-  const ctx = useHalcyon()
+  const ctx = usePeglo()
   const { deployment, client, chain, signer } = ctx
   const publicClient = ctx.publicClient!
   const wallet = ctx.wallet as Wallet | null
@@ -125,8 +125,8 @@ export default function LabPage() {
       const from = latest > deployment.fromBlock + EVENT_WINDOW ? latest - EVENT_WINDOW : deployment.fromBlock
       const logs = await publicClient.getLogs({ address: [deployment.oracle, deployment.batchTaker], fromBlock: from, toBlock: latest })
       const parsed = [
-        ...parseEventLogs({ abi: halcyonOracleAbi, logs, eventName: ['StatusUpdated', 'GuardianOverride'] }),
-        ...parseEventLogs({ abi: halcyonBatchTakerAbi, logs, eventName: 'BatchSwapped' }),
+        ...parseEventLogs({ abi: pegloOracleAbi, logs, eventName: ['StatusUpdated', 'GuardianOverride'] }),
+        ...parseEventLogs({ abi: pegloBatchTakerAbi, logs, eventName: 'BatchSwapped' }),
       ]
       return parsed.sort((a, b) => Number(b.blockNumber - a.blockNumber) || b.logIndex - a.logIndex).slice(0, 6)
     },
@@ -152,7 +152,7 @@ export default function LabPage() {
     guardTx.run(halt ? 'Halting' : 'Resuming', async () => {
       const key = ANVIL_ACCOUNTS.find((a) => a.label === 'Guardian')!.key
       const g = createWalletClient({ chain, account: privateKeyToAccount(key), transport: http(RPC_URL) })
-      const hash = await g.writeContract({ address: deployment.oracle, abi: halcyonOracleAbi, functionName: 'guardianSet', args: [coin.address, halt] })
+      const hash = await g.writeContract({ address: deployment.oracle, abi: pegloOracleAbi, functionName: 'guardianSet', args: [coin.address, halt] })
       await publicClient.waitForTransactionReceipt({ hash })
       return { message: `${coin.symbol} ${halt ? 'halted' : 'resumed'} by the guardian.`, hash }
     })

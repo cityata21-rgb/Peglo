@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { ReactNode } from 'react'
 import { AppShell } from '@/components/app-shell'
-import { HalcyonProvider } from '@/lib/halcyon'
+import { PegloProvider } from '@/lib/peglo'
 import { THEME_BOOT } from '@/lib/theme-boot'
 import './globals.css'
 
@@ -11,7 +11,7 @@ const sans = Geist({ subsets: ['latin'], variable: '--font-geist', display: 'swa
 const mono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono', display: 'swap' })
 
 export const metadata: Metadata = {
-  title: 'Halcyon',
+  title: 'Peglo',
   description:
     'Liquidity that never leaves. One wallet balance makes stablecoin FX markets on Solana and 1inch Aqua and backs every stablecoin when one breaks.',
 }
@@ -24,9 +24,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
       </head>
       <body className="min-h-dvh">
-        <HalcyonProvider>
+        <PegloProvider>
           <AppShell>{children}</AppShell>
-        </HalcyonProvider>
+        </PegloProvider>
         <Analytics />
       </body>
     </html>

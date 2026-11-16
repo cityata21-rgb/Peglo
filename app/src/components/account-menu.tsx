@@ -6,7 +6,7 @@ import { privateKeyToAccount } from 'viem/accounts'
 import { useTestCoins } from '@/components/test-coins'
 import { shortAddress } from '@/lib/format'
 import { explorerFor } from '@/lib/chain'
-import { ANVIL_ACCOUNTS, DEV_ACCOUNTS, type WalletChoice, useHalcyon } from '@/lib/halcyon'
+import { ANVIL_ACCOUNTS, DEV_ACCOUNTS, type WalletChoice, usePeglo } from '@/lib/peglo'
 
 const item = 'flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2.5 text-left text-sm transition-colors hover:bg-surface-hover disabled:opacity-60'
 const heading = 'px-2.5 pt-1.5 pb-1 text-[10px] font-medium tracking-[0.08em] text-muted uppercase'
@@ -17,7 +17,7 @@ function WalletIcon({ option }: { option: WalletChoice }) {
 }
 
 export function AccountMenu() {
-  const { signer, setSigner, wallets, connectInjected, disconnect, deployment, kind } = useHalcyon()
+  const { signer, setSigner, wallets, connectInjected, disconnect, deployment, kind } = usePeglo()
   const coins = useTestCoins()
   const explorer = DEV_ACCOUNTS ? undefined : explorerFor(deployment.chainId)
   const [open, setOpen] = useState(false)

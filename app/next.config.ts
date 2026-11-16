@@ -8,7 +8,7 @@ const config: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR ?? '.next',
   outputFileTracingRoot: join(process.cwd(), '..'),
   outputFileTracingIncludes: { '/api/deployment': ['../deployments/*.json'] },
-  transpilePackages: ['@halcyon/sdk'],
+  transpilePackages: ['@peglo/sdk'],
   webpack: (cfg) => {
     cfg.resolve.extensionAlias = { '.js': ['.ts', '.tsx', '.js'] }
     return cfg

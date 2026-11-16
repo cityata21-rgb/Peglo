@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ChevronDown } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { RequireDeployment, useMaybeHalcyon, useNetwork, useOracleStatus, useHalcyon } from '@/lib/halcyon'
+import { RequireDeployment, useMaybePeglo, useNetwork, useOracleStatus, usePeglo } from '@/lib/peglo'
 import { DEV_ACCOUNTS, NETWORK_LABELS } from '@/lib/config'
 import { AccountMenu } from './account-menu'
 import { ThemeToggle } from './theme-toggle'
@@ -24,7 +24,7 @@ const NAV = [
 
 
 function NetworkPill() {
-  const { chain } = useHalcyon()
+  const { chain } = usePeglo()
   const oracle = useOracleStatus()
   const halted = oracle.data?.filter((s) => s.halted).length ?? 0
   return (
@@ -101,15 +101,15 @@ function Nav({ path, className }: { path: string; className: string }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const path = usePathname()
-  const ctx = useMaybeHalcyon()
+  const ctx = useMaybePeglo()
   if (path === '/' || path === '/deck') return <>{children}</>
   return (
     <>
       <header className="sticky top-0 z-20 border-b border-line bg-paper/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center gap-8 px-4 sm:px-6">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Halcyon home">
+          <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Peglo home">
             <LogoMark className="h-[21px] w-[18px]" />
-            <span className="text-[18px] font-semibold tracking-[-0.02em]">Halcyon</span>
+            <span className="text-[18px] font-semibold tracking-[-0.02em]">Peglo</span>
           </Link>
           <Nav path={path} className="hidden gap-7 lg:flex" />
           <div className="ml-auto flex items-center gap-2 sm:gap-3">

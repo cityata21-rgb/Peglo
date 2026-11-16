@@ -1,4 +1,4 @@
-import { type LiveRange, type PresetId, type PriceInfo, HalcyonMathError, exactIn, radius, virtualBalances } from '@halcyon/sdk'
+import { type LiveRange, type PresetId, type PriceInfo, PegloMathError, exactIn, radius, virtualBalances } from '@peglo/sdk'
 import { presetOf, valueUsd } from './strategy'
 
 export const DEPTH_BANDS = [0.9999, 0.9995, 0.999, 0.998, 0.995, 0.99, 0.98, 0.95]
@@ -47,7 +47,7 @@ export function depthBands(ranges: LiveRange[], prices: Map<string, PriceInfo>, 
             next = (next + step + 1) % (real.length - 1)
             filled = true
           } catch (e) {
-            if (!(e instanceof HalcyonMathError)) throw e
+            if (!(e instanceof PegloMathError)) throw e
           }
         }
         if (!filled) open = false

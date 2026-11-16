@@ -20,7 +20,7 @@ const FRIENDLY: Record<string, string> = {
   MissingFeed: 'A price feed account was missing from the trade. Quote again.',
   Slippage: 'Price moved beyond your slippage limit. Quote again.',
   Unauthorized: 'Only the wallet that opened this strategy can close it.',
-  UnknownCoin: 'This coin is not listed on the Halcyon oracle.',
+  UnknownCoin: 'This coin is not listed on the Peglo oracle.',
   ZeroAmount: 'The amount is too small to trade.',
   InsufficientLiquidity: 'A provider spent from their wallet. Quote again to route around them.',
   RangeEdge: 'Every range reached its edge for this trade. Try a smaller amount.',

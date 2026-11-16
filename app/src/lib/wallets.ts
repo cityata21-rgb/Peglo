@@ -21,7 +21,7 @@ interface Announcement {
   provider: Eip1193
 }
 
-export const WALLET_KEY = 'halcyon-wallet'
+export const WALLET_KEY = 'peglo-wallet'
 
 export function useWalletOptions(): WalletOption[] {
   const [options, setOptions] = useState<WalletOption[]>([])

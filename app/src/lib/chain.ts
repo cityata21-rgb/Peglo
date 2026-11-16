@@ -42,9 +42,9 @@ const EVM: ChainCopy = {
   oracle: 'Chainlink',
   guard: 'Chainlink CRE',
   haltSource: 'Chainlink CRE',
-  venue: 'Halcyon router',
+  venue: 'Peglo router',
   swapIntro:
-    'Any pair across eight stablecoins. One quote splits across LP strategies on the 1inch router and the Halcyon router, settled in one transaction.',
+    'Any pair across eight stablecoins. One quote splits across LP strategies on the 1inch router and the Peglo router, settled in one transaction.',
   pricesNote: 'Pegged coins count at $1 unless CRE halts them. FX coins use live Chainlink rates. Tap a coin to receive it.',
   rateStale: (coins) =>
     coins.length > 1
@@ -55,9 +55,9 @@ const EVM: ChainCopy = {
 
 const SOLANA: ChainCopy = {
   oracle: 'oracle',
-  guard: 'the Halcyon sentinel',
-  haltSource: 'the Halcyon sentinel',
-  venue: 'Halcyon program',
+  guard: 'the Peglo sentinel',
+  haltSource: 'the Peglo sentinel',
+  venue: 'Peglo program',
   swapIntro:
     'Any pair across eight Solana stablecoins. One quote splits across LP strategies and settles in one transaction, paid straight from the LPs’ wallets.',
   pricesNote:
