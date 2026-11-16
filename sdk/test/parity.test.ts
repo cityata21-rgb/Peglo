@@ -5,8 +5,8 @@ import { type Address, getAddress } from 'viem'
 import { describe, expect, it } from 'vitest'
 import {
   type RangeConfig,
-  STABRIX_TICK_OPCODE,
-  StabrixMathError,
+  HALCYON_TICK_OPCODE,
+  HalcyonMathError,
   USE_AQUA_FLAG,
   buildOrder,
   decodeConfig,
@@ -41,7 +41,7 @@ const v = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), 
   nativeHash: `0x${string}`
   officialData: `0x${string}`
   officialHash: `0x${string}`
-  stabrixOpcode: number
+  halcyonOpcode: number
   cases: Case[]
 }
 
@@ -64,14 +64,14 @@ const run = (f: () => bigint) => {
   try {
     return f().toString()
   } catch (e) {
-    if (e instanceof StabrixMathError) return 'revert'
+    if (e instanceof HalcyonMathError) return 'revert'
     throw e
   }
 }
 
 describe('parity with Solidity', () => {
   it('opcode matches the router', () => {
-    expect(STABRIX_TICK_OPCODE).toBe(v.stabrixOpcode)
+    expect(HALCYON_TICK_OPCODE).toBe(v.halcyonOpcode)
   })
 
   it('encodes config byte for byte', () => {

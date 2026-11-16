@@ -12,10 +12,10 @@ import {
   maxUint256,
   parseEventLogs,
 } from 'viem'
-import { aquaAbi, stabrixBatchTakerAbi, stabrixLensAbi, stabrixOracleAbi } from './abi.js'
+import { aquaAbi, halcyonBatchTakerAbi, halcyonLensAbi, halcyonOracleAbi } from './abi.js'
 import { type BackstopConfig, backstopOut } from './backstop.js'
 import { type RangeConfig, ZERO_ADDRESS, toRange } from './config.js'
-import { type Range, StabrixMathError, WAD, exactIn, rateWithPrice, spotPrice } from './math.js'
+import { type Range, HalcyonMathError, WAD, exactIn, rateWithPrice, spotPrice } from './math.js'
 import {
   type Order,
   type Venue,
@@ -121,7 +121,7 @@ const key = (...parts: string[]) => parts.map((p) => p.toLowerCase()).join(':')
 const SHIPPED = getAbiItem({ abi: aquaAbi, name: 'Shipped' })
 const DOCKED = getAbiItem({ abi: aquaAbi, name: 'Docked' })
 
-export class StabrixClient {
+export class HalcyonClient {
   private events: (ShipEvent | DockEvent)[] = []
   private seen = new Set<string>()
   private scanning: Promise<bigint> | null = null
@@ -247,9 +247,9 @@ export class StabrixClient {
     const oracle = this.deployment.oracle
     const results = await this.publicClient.multicall({
       contracts: tokens.flatMap((t) => [
-        { address: oracle, abi: stabrixOracleAbi, functionName: 'priceOf', args: [t] } as const,
-        { address: oracle, abi: stabrixOracleAbi, functionName: 'isHalted', args: [t] } as const,
-        { address: oracle, abi: stabrixOracleAbi, functionName: 'feeds', args: [t] } as const,
+        { address: oracle, abi: halcyonOracleAbi, functionName: 'priceOf', args: [t] } as const,
+        { address: oracle, abi: halcyonOracleAbi, functionName: 'isHalted', args: [t] } as const,
+        { address: oracle, abi: halcyonOracleAbi, functionName: 'feeds', args: [t] } as const,
       ]),
       allowFailure: true,
     })
@@ -267,7 +267,7 @@ export class StabrixClient {
     })
     if (depegCalls.length > 0) {
       const depeg = await this.publicClient.multicall({
-        contracts: depegCalls.map((t) => ({ address: oracle, abi: stabrixOracleAbi, functionName: 'depegPrice', args: [t] }) as const),
+        contracts: depegCalls.map((t) => ({ address: oracle, abi: halcyonOracleAbi, functionName: 'depegPrice', args: [t] }) as const),
         allowFailure: true,
       })
       depegCalls.forEach((t, k) => {
@@ -298,7 +298,7 @@ export class StabrixClient {
       this.publicClient.multicall({
         contracts: makers.map((m) => ({
           address: this.deployment.lens,
-          abi: stabrixLensAbi,
+          abi: halcyonLensAbi,
           functionName: 'spendable',
           args: [m, allTokens],
         })) as never,
@@ -331,7 +331,7 @@ export class StabrixClient {
       quote: (i, j, amountIn) => {
         const feeBps = r.fx[i] || r.fx[j] ? r.config.fxFeeBps : r.config.feeBps
         const out = exactIn(r.balances, r.rates, { ...r.range, feeBps }, i, j, amountIn)
-        if (out > r.spendable[j]!) throw new StabrixMathError('InsufficientReserve')
+        if (out > r.spendable[j]!) throw new HalcyonMathError('InsufficientReserve')
         return out
       },
       wallet: { owner: r.maker, spendable: (j) => r.spendable[j]! },
@@ -349,8 +349,8 @@ export class StabrixClient {
       quote: (i, j, amountIn) => {
         const pin = prices.get(b.config.tokens[i]!.toLowerCase())
         const pout = prices.get(b.config.tokens[j]!.toLowerCase())
-        if (!pin?.halted || pin.depegE18 == null || pin.priceE18 == null) throw new StabrixMathError('OutOfRange')
-        if (!pout || pout.halted || pout.priceE18 == null) throw new StabrixMathError('OutOfRange')
+        if (!pin?.halted || pin.depegE18 == null || pin.priceE18 == null) throw new HalcyonMathError('OutOfRange')
+        if (!pout || pout.halted || pout.priceE18 == null) throw new HalcyonMathError('OutOfRange')
         const out = backstopOut({
           amountIn,
           absorbedIn: b.balances[i]!,
@@ -363,7 +363,7 @@ export class StabrixClient {
           endBps: b.config.endDiscountBps,
           cap: b.config.capPerToken,
         })
-        if (out > b.balances[j]! || out > b.spendable[j]!) throw new StabrixMathError('InsufficientReserve')
+        if (out > b.balances[j]! || out > b.spendable[j]!) throw new HalcyonMathError('InsufficientReserve')
         return out
       },
       wallet: { owner: b.maker, spendable: (j) => b.spendable[j]! },
@@ -408,7 +408,7 @@ export class StabrixClient {
     const { result } = await this.publicClient.simulateContract({
       account,
       address: this.deployment.batchTaker,
-      abi: stabrixBatchTakerAbi,
+      abi: halcyonBatchTakerAbi,
       functionName: 'swapExactIn',
       args: [quote.tokenIn, quote.tokenOut, this.toLegs(quote), 0n, account, Math.floor(Date.now() / 1000) + 600],
     })
@@ -441,13 +441,13 @@ export class StabrixClient {
     const now = Math.max(Number(block.timestamp), Math.floor(Date.now() / 1000))
     const hash = await wallet.writeContract({
       address: this.deployment.batchTaker,
-      abi: stabrixBatchTakerAbi,
+      abi: halcyonBatchTakerAbi,
       functionName: 'swapExactIn',
       args: [quote.tokenIn, quote.tokenOut, this.toLegs(quote), minOut, wallet.account.address, now + deadlineSeconds],
     })
     const receipt = await this.publicClient.waitForTransactionReceipt({ hash })
     if (receipt.status !== 'success') throw new Error(`swap reverted in ${hash}`)
-    const [ev] = parseEventLogs({ abi: stabrixBatchTakerAbi, logs: receipt.logs, eventName: 'BatchSwapped' })
+    const [ev] = parseEventLogs({ abi: halcyonBatchTakerAbi, logs: receipt.logs, eventName: 'BatchSwapped' })
     return { hash, receipt, amountOut: ev?.args.amountOut ?? 0n }
   }
 
@@ -555,8 +555,8 @@ export class StabrixClient {
     const oracle = this.deployment.oracle
     const results = await this.publicClient.multicall({
       contracts: tokens.flatMap((t) => [
-        { address: oracle, abi: stabrixOracleAbi, functionName: 'status', args: [t] } as const,
-        { address: oracle, abi: stabrixOracleAbi, functionName: 'guardianHalted', args: [t] } as const,
+        { address: oracle, abi: halcyonOracleAbi, functionName: 'status', args: [t] } as const,
+        { address: oracle, abi: halcyonOracleAbi, functionName: 'guardianHalted', args: [t] } as const,
       ]),
       allowFailure: false,
     })

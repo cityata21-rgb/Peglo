@@ -9,7 +9,7 @@ export interface Range {
   maxShareBps: number
 }
 
-export type StabrixErrorCode =
+export type HalcyonErrorCode =
   | 'SameToken'
   | 'ZeroAmount'
   | 'OffSurface'
@@ -20,15 +20,15 @@ export type StabrixErrorCode =
   | 'ValueDecreased'
   | 'BackstopFull'
 
-export class StabrixMathError extends Error {
-  constructor(readonly code: StabrixErrorCode) {
+export class HalcyonMathError extends Error {
+  constructor(readonly code: HalcyonErrorCode) {
     super(code)
-    this.name = 'StabrixMathError'
+    this.name = 'HalcyonMathError'
   }
 }
 
-const fail = (code: StabrixErrorCode): never => {
-  throw new StabrixMathError(code)
+const fail = (code: HalcyonErrorCode): never => {
+  throw new HalcyonMathError(code)
 }
 
 export function sqrt(a: bigint): bigint {

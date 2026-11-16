@@ -1,4 +1,4 @@
-import { BPS, type Range, StabrixMathError, WAD, exactIn, spotPrice, sumRatio } from './math.js'
+import { BPS, type Range, HalcyonMathError, WAD, exactIn, spotPrice, sumRatio } from './math.js'
 
 export type PresetId = 'tight' | 'balanced' | 'wide'
 
@@ -54,7 +54,7 @@ export function designRange(n: number, preset: RangePreset, maxShareBps = 10_000
         real = next
         moved = true
       } catch (e) {
-        if (!(e instanceof StabrixMathError)) throw e
+        if (!(e instanceof HalcyonMathError)) throw e
       }
     }
     if (!moved) break

@@ -1,5 +1,5 @@
 {
-  "name": "stabrix",
+  "name": "halcyon",
   "private": true,
   "license": "MIT",
   "workspaces": [
@@ -8,7 +8,7 @@
     "app"
   ],
   "scripts": {
-    "test": "npm run test -w @stabrix/sdk && cd contracts && forge test",
-    "dev": "npm run dev -w @stabrix/app"
+    "test": "npm run test -w @halcyon/sdk && cd contracts && forge test",
+    "dev": "npm run dev -w @halcyon/app"
   }
 }

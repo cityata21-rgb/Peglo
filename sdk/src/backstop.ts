@@ -1,5 +1,5 @@
 import { type Address, type Hex, concatHex, getAddress, hexToBigInt, numberToHex, size, sliceHex } from 'viem'
-import { StabrixMathError, WAD } from './math.js'
+import { HalcyonMathError, WAD } from './math.js'
 
 export const MAX_BACKSTOP_DISCOUNT_BPS = 5000
 export const BACKSTOP_FIXED_BYTES = 40
@@ -84,14 +84,14 @@ export function backstopOut(x: BackstopQuote): bigint {
   const unitIn = 10n ** BigInt(x.decimalsIn)
   const absorbed = (x.absorbedIn * x.faceIn) / unitIn
   const incoming = (x.amountIn * x.faceIn) / unitIn
-  if (absorbed + incoming > x.cap) throw new StabrixMathError('BackstopFull')
+  if (absorbed + incoming > x.cap) throw new HalcyonMathError('BackstopFull')
   const span = BigInt(x.endBps - x.startBps)
   const twoCap = 2n * x.cap
   const discount = ceilDiv((BigInt(x.startBps) * twoCap + span * (2n * absorbed + incoming)) * BPS_TO_WAD, twoCap)
   const market = x.marketIn < x.faceIn ? x.marketIn : x.faceIn
   const valueOut = (x.amountIn * market * (WAD - discount)) / (unitIn * WAD)
   let out = (valueOut * 10n ** BigInt(x.decimalsOut)) / x.priceOut
-  if (out <= 1n) throw new StabrixMathError('ZeroAmount')
+  if (out <= 1n) throw new HalcyonMathError('ZeroAmount')
   out -= 1n
   return out
 }

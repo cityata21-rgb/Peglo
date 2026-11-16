@@ -18,7 +18,7 @@ import type { Address, Hex } from 'viem'
 import type { BackstopConfig } from '../backstop.js'
 import type { LiveBackstop, LiveRange, Market, OracleStatus, PriceInfo, Quote, TokenInfo } from '../client.js'
 import type { RangeConfig } from '../config.js'
-import { StabrixMathError, WAD, exactIn, rateWithPrice, spotPrice } from '../math.js'
+import { HalcyonMathError, WAD, exactIn, rateWithPrice, spotPrice } from '../math.js'
 import type { Order } from '../order.js'
 import { type PresetId, defaultMaxShareBps, designRange, presetById, scaleRange } from '../presets.js'
 import { type RangeState, splitExactIn } from '../split.js'
@@ -107,7 +107,7 @@ export function explainSolanaError(e: unknown): string {
   return e instanceof Error ? e.message : String(e)
 }
 
-export class SolanaStabrixClient {
+export class SolanaHalcyonClient {
   readonly program: PublicKey
   readonly oracleAddress: PublicKey
 
@@ -177,7 +177,7 @@ export class SolanaStabrixClient {
     return this.toPriceInfo(byMint)
   }
 
-  private toPriceInfo(byMint: Awaited<ReturnType<SolanaStabrixClient['pricesE9']>>['byMint']) {
+  private toPriceInfo(byMint: Awaited<ReturnType<SolanaHalcyonClient['pricesE9']>>['byMint']) {
     const out = new Map<string, PriceInfo>()
     for (const t of this.deployment.tokens) {
       const p = byMint.get(lower(t.address))
@@ -312,7 +312,7 @@ export class SolanaStabrixClient {
       quote: (i, j, amountIn) => {
         const feeBps = r.fx[i] || r.fx[j] ? r.config.fxFeeBps : r.config.feeBps
         const out = exactIn(r.balances, s.sol.rates, { ...range, feeBps }, i, j, amountIn)
-        if (out > r.spendable[j]!) throw new StabrixMathError('InsufficientReserve')
+        if (out > r.spendable[j]!) throw new HalcyonMathError('InsufficientReserve')
         return out
       },
       wallet: { owner: r.maker, spendable: (j) => r.spendable[j]! },
@@ -330,8 +330,8 @@ export class SolanaStabrixClient {
       quote: (i, j, amountIn) => {
         const pin = prices.get(lower(b.config.tokens[i]!))
         const pout = prices.get(lower(b.config.tokens[j]!))
-        if (!pin?.halted || pin.depegE18 == null || pin.priceE18 == null) throw new StabrixMathError('OutOfRange')
-        if (!pout || pout.halted || pout.priceE18 == null) throw new StabrixMathError('OutOfRange')
+        if (!pin?.halted || pin.depegE18 == null || pin.priceE18 == null) throw new HalcyonMathError('OutOfRange')
+        if (!pout || pout.halted || pout.priceE18 == null) throw new HalcyonMathError('OutOfRange')
         const out = solBackstopOut({
           amountIn,
           absorbedIn: b.balances[i]!,
@@ -344,7 +344,7 @@ export class SolanaStabrixClient {
           endBps: b.config.endDiscountBps,
           cap: b.config.capPerToken / SCALE,
         })
-        if (out > b.balances[j]! || out > b.spendable[j]!) throw new StabrixMathError('InsufficientReserve')
+        if (out > b.balances[j]! || out > b.spendable[j]!) throw new HalcyonMathError('InsufficientReserve')
         return out
       },
       wallet: { owner: b.maker, spendable: (j) => b.spendable[j]! },

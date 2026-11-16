@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { StabrixMathError, exactIn } from '../src/math.js'
+import { HalcyonMathError, exactIn } from '../src/math.js'
 import { solBackstopOut, solRate } from '../src/solana/math.js'
 import vectors from './solana-vectors.json' with { type: 'json' }
 
@@ -9,7 +9,7 @@ const run = (f: () => bigint) => {
   try {
     return f().toString()
   } catch (e) {
-    if (e instanceof StabrixMathError) return e.code
+    if (e instanceof HalcyonMathError) return e.code
     throw e
   }
 }

@@ -6,7 +6,7 @@ import {
   type LiveRange,
   type Market,
   type PriceInfo,
-  StabrixClient,
+  HalcyonClient,
   WAD,
   backstopOut,
   buildBackstopOrder,
@@ -44,7 +44,7 @@ const deployment: Deployment = {
     marketFeed: zeroAddress,
   })),
 }
-const client = new StabrixClient({} as PublicClient, deployment)
+const client = new HalcyonClient({} as PublicClient, deployment)
 
 const units = (usd: bigint, k: number) => (usd * 10n ** BigInt(decimals[k]!) * WAD) / prices[k]!
 
@@ -209,7 +209,7 @@ describe('log scanning', () => {
         return [log]
       },
     } as unknown as PublicClient
-    const c = new StabrixClient(fake, deployment)
+    const c = new HalcyonClient(fake, deployment)
     const scan = (c as unknown as { scan: () => Promise<bigint> }).scan.bind(c)
     await Promise.all([scan(), scan(), scan()])
     await scan()
