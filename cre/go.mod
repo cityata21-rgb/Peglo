@@ -1,4 +1,4 @@
-module halcyon/cre
+module peglo/cre
 
 go 1.25.3
 

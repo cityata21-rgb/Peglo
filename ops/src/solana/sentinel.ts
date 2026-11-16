@@ -1,4 +1,4 @@
-import { ix, readPyth } from '@halcyon/sdk/solana'
+import { ix, readPyth } from '@peglo/sdk/solana'
 import { PublicKey, Transaction, sendAndConfirmTransaction } from '@solana/web3.js'
 import { COINS, type CoinSpec, MARKET_MAX_AGE, clientFor, cluster, connect, loadKeypair } from './common.js'
 

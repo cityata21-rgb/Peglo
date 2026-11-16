@@ -1,4 +1,4 @@
-import { type PresetId, HalcyonClient, type Venue, WAD, buildBackstopOrder, buildOrder, mockStablecoinAbi } from '@halcyon/sdk'
+import { type PresetId, PegloClient, type Venue, WAD, buildBackstopOrder, buildOrder, mockStablecoinAbi } from '@peglo/sdk'
 import { type Address, createWalletClient, formatUnits, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { RPC_URL, connect, deployerKey, loadDeployment } from './env.js'
@@ -21,7 +21,7 @@ const PAYOUT = ['USDC', 'USDT']
 async function main() {
   const c = await connect()
   const deployment = loadDeployment(c.chainId)
-  const client = new HalcyonClient(c.publicClient, deployment)
+  const client = new PegloClient(c.publicClient, deployment)
   const wallet = createWalletClient({ chain: c.chain, account: privateKeyToAccount(deployerKey()), transport: http(RPC_URL) })
   const me = wallet.account.address
   const venueOf = (v: VenueId, target: Address): Venue => (v === 'native' ? { kind: 'native' } : { kind: 'official', extruction: target })

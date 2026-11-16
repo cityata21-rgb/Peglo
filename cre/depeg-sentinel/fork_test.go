@@ -57,7 +57,7 @@ func rpc(t *testing.T, url, method string, params ...any) json.RawMessage {
 func TestConfigsAreValid(t *testing.T) {
 	files, _ := filepath.Glob("config.*.json")
 	if len(files) == 0 {
-		t.Fatal("no workflow configs; run npm run cre-config -w @halcyon/ops")
+		t.Fatal("no workflow configs; run npm run cre-config -w @peglo/ops")
 	}
 	for _, p := range files {
 		loadConfig(t, p)
@@ -65,9 +65,9 @@ func TestConfigsAreValid(t *testing.T) {
 }
 
 func TestForkReadsAndDecisions(t *testing.T) {
-	url := os.Getenv("HALCYON_FORK_RPC")
+	url := os.Getenv("PEGLO_FORK_RPC")
 	if url == "" {
-		t.Skip("set HALCYON_FORK_RPC to run against a fork")
+		t.Skip("set PEGLO_FORK_RPC to run against a fork")
 	}
 	cfg := loadConfig(t, "config.fork.json")
 	plan := PlanReads(cfg)
@@ -122,7 +122,7 @@ func TestForkReadsAndDecisions(t *testing.T) {
 			t.Fatalf("%s: unknown decision", tk.Symbol)
 		}
 		t.Logf("%-5s ref=%v feed=%v api=%v onchainHalted=%v -> halt=%v push=%v (%s)", tk.Symbol, obs.Ref, obs.Feed, obs.Api, obs.Halted, d.Halt, d.Push, d.Reason)
-		if want := os.Getenv("HALCYON_EXPECT_HALTED"); want != "" {
+		if want := os.Getenv("PEGLO_EXPECT_HALTED"); want != "" {
 			if d.Halt != strings.Contains(","+want+",", ","+tk.Symbol+",") {
 				t.Errorf("%s: halt=%v, expected halted set %s", tk.Symbol, d.Halt, want)
 			}
@@ -131,8 +131,8 @@ func TestForkReadsAndDecisions(t *testing.T) {
 }
 
 func TestLiveProductionApis(t *testing.T) {
-	if os.Getenv("HALCYON_LIVE_APIS") == "" {
-		t.Skip("set HALCYON_LIVE_APIS=1 to query CoinGecko and DefiLlama")
+	if os.Getenv("PEGLO_LIVE_APIS") == "" {
+		t.Skip("set PEGLO_LIVE_APIS=1 to query CoinGecko and DefiLlama")
 	}
 	var cfg *Config
 	for _, p := range []string{"config.production.json", "config.testnet.json"} {
@@ -142,7 +142,7 @@ func TestLiveProductionApis(t *testing.T) {
 		}
 	}
 	if cfg == nil {
-		t.Skip("no live config; run npm run cre-config -w @halcyon/ops -- testnet or production")
+		t.Skip("no live config; run npm run cre-config -w @peglo/ops -- testnet or production")
 	}
 	refs := map[string]float64{"EURC": 1.12, "BRZ": 0.18, "IDRX": 0.0000553}
 	for a, url := range cfg.ApiUrls {

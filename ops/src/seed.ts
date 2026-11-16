@@ -1,4 +1,4 @@
-import { type PresetId, HalcyonClient, type Venue, WAD } from '@halcyon/sdk'
+import { type PresetId, PegloClient, type Venue, WAD } from '@peglo/sdk'
 import { formatUnits, parseEther } from 'viem'
 import { dealERC20 } from './deal.js'
 import { connect, loadDeployment } from './env.js'
@@ -15,7 +15,7 @@ const TRADER_USD = 250_000n
 async function main() {
   const c = await connect()
   const d = loadDeployment(c.chainId)
-  const client = new HalcyonClient(c.publicClient, d)
+  const client = new PegloClient(c.publicClient, d)
   const prices = await client.prices()
   const units = (address: string, decimals: number, usd: bigint) => {
     const p = prices.get(address.toLowerCase())?.priceE18

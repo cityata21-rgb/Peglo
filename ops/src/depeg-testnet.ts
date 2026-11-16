@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { HalcyonClient, WAD, mockStablecoinAbi, halcyonOracleAbi } from '@halcyon/sdk'
+import { PegloClient, WAD, mockStablecoinAbi, pegloOracleAbi } from '@peglo/sdk'
 import { type Hex, createWalletClient, formatUnits, http, parseAbi, parseEther, parseUnits, zeroAddress } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { ROOT, RPC_URL, connect, deployerKey, loadDeployment } from './env.js'
@@ -16,7 +16,7 @@ async function main() {
   const c = await connect()
   if (c.chainId === 8453) throw new Error('Base mainnet coins depeg for real; this demo is for testnets only')
   const d = loadDeployment(c.chainId)
-  const client = new HalcyonClient(c.publicClient, d)
+  const client = new PegloClient(c.publicClient, d)
   const wallet = createWalletClient({ chain: c.chain, account: privateKeyToAccount(deployerKey()), transport: http(RPC_URL) })
   const token = d.tokens.find((t) => t.symbol === symbol)
   if (!token) throw new Error(`unknown coin ${symbol}`)
@@ -25,7 +25,7 @@ async function main() {
     if (receipt.status !== 'success') throw new Error(`${label} reverted in ${hash}`)
     console.log(`${label}: ${hash}`)
   }
-  const oracle = { address: d.oracle, abi: halcyonOracleAbi } as const
+  const oracle = { address: d.oracle, abi: pegloOracleAbi } as const
 
   if (command === 'halt') {
     const price = Number(value)

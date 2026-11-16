@@ -1,4 +1,4 @@
-import { ORACLE_LEN, type SolanaDeployment, TOKEN_2022_PROGRAM, TOKEN_PROGRAM, decodeOracle, ix, pda } from '@halcyon/sdk/solana'
+import { ORACLE_LEN, type SolanaDeployment, TOKEN_2022_PROGRAM, TOKEN_PROGRAM, decodeOracle, ix, pda } from '@peglo/sdk/solana'
 import { createInitializeMint2Instruction, getMintLen } from '@solana/spl-token'
 import { Keypair, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from '@solana/web3.js'
 import {

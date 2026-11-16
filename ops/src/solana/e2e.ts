@@ -1,11 +1,11 @@
-import { type SolanaRange, SolanaHalcyonClient, ix } from '@halcyon/sdk/solana'
+import { type SolanaRange, SolanaPegloClient, ix } from '@peglo/sdk/solana'
 import { Keypair, LAMPORTS_PER_SOL, Transaction, sendAndConfirmTransaction } from '@solana/web3.js'
 import { connect, loadKeypair, readDeployment, signerOf } from './common.js'
 
 const conn = connect('localnet')
 const d = readDeployment('localnet')
 if (!d) throw new Error('run solana:setup -- --cluster=localnet first')
-const client = new SolanaHalcyonClient(conn, d)
+const client = new SolanaPegloClient(conn, d)
 const admin = loadKeypair()
 const program = client.program
 const sym = (s: string) => client.tokens.find((t) => t.symbol === s)!

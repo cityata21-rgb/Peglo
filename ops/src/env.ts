@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { Deployment } from '@halcyon/sdk'
+import type { Deployment } from '@peglo/sdk'
 import {
   type Chain,
   type Hex,

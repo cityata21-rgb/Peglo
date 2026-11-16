@@ -1,4 +1,4 @@
-import { type LiveBackstop, type LiveRange, type PriceInfo, HalcyonClient, WAD } from '@halcyon/sdk'
+import { type LiveBackstop, type LiveRange, type PriceInfo, PegloClient, WAD } from '@peglo/sdk'
 import { type Address, formatUnits, parseEther, parseUnits } from 'viem'
 import { dealERC20 } from './deal.js'
 import { connect, loadDeployment } from './env.js'
@@ -22,7 +22,7 @@ function usdValue(s: Held, prices: Map<string, PriceInfo>, bad: Address, badPric
 async function main() {
   const c = await connect()
   const d = loadDeployment(c.chainId)
-  const client = new HalcyonClient(c.publicClient, d)
+  const client = new PegloClient(c.publicClient, d)
   const bad = d.tokens.find((t) => t.symbol === SYMBOL)
   if (!bad) throw new Error(`unknown symbol ${SYMBOL}`)
   const priceE18 = parseUnits(PRICE, 18)
