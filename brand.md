@@ -1,4 +1,4 @@
-# Brand: Halcyon
+# Brand: Peglo
 
 **Liquidity that never leaves.** Parchment and ink: a nautical chart, hand-inked cards, serif numbers. Light by default; a sun and moon toggle switches to a night version where the ink turns to chalk on a dark sea, and the choice is remembered. Tokens live in `app/src/app/globals.css` (dark values under `:root[data-theme='dark']`); the landing has its own scoped sheet in `app/src/app/saltwake.css` with matching dark variables.
 
