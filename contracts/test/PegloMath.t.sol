@@ -2,49 +2,49 @@
 pragma solidity 0.8.30;
 
 import {Test} from "forge-std/Test.sol";
-import {HalcyonMath} from "../src/HalcyonMath.sol";
+import {PegloMath} from "../src/PegloMath.sol";
 
 contract RangeHarness {
     uint256[] public real;
     uint256[] public rates;
-    HalcyonMath.Range public range;
+    PegloMath.Range public range;
 
-    constructor(uint256[] memory real_, uint256[] memory rates_, HalcyonMath.Range memory range_) {
+    constructor(uint256[] memory real_, uint256[] memory rates_, PegloMath.Range memory range_) {
         real = real_;
         rates = rates_;
         range = range_;
     }
 
-    function state() public view returns (uint256[] memory, uint256[] memory, HalcyonMath.Range memory) {
+    function state() public view returns (uint256[] memory, uint256[] memory, PegloMath.Range memory) {
         return (real, rates, range);
     }
 
     function swapIn(uint256 i, uint256 j, uint256 amountIn) external returns (uint256 out) {
-        (uint256[] memory r, uint256[] memory q, HalcyonMath.Range memory p) = state();
-        out = HalcyonMath.exactIn(r, q, p, i, j, amountIn);
+        (uint256[] memory r, uint256[] memory q, PegloMath.Range memory p) = state();
+        out = PegloMath.exactIn(r, q, p, i, j, amountIn);
         real[i] += amountIn;
         real[j] -= out;
     }
 
     function swapOut(uint256 i, uint256 j, uint256 amountOut) external returns (uint256 inAmt) {
-        (uint256[] memory r, uint256[] memory q, HalcyonMath.Range memory p) = state();
-        inAmt = HalcyonMath.exactOut(r, q, p, i, j, amountOut);
+        (uint256[] memory r, uint256[] memory q, PegloMath.Range memory p) = state();
+        inAmt = PegloMath.exactOut(r, q, p, i, j, amountOut);
         real[i] += inAmt;
         real[j] -= amountOut;
     }
 
     function quoteIn(uint256 i, uint256 j, uint256 amountIn) external view returns (uint256) {
-        (uint256[] memory r, uint256[] memory q, HalcyonMath.Range memory p) = state();
-        return HalcyonMath.exactIn(r, q, p, i, j, amountIn);
+        (uint256[] memory r, uint256[] memory q, PegloMath.Range memory p) = state();
+        return PegloMath.exactIn(r, q, p, i, j, amountIn);
     }
 
     function quoteOut(uint256 i, uint256 j, uint256 amountOut) external view returns (uint256) {
-        (uint256[] memory r, uint256[] memory q, HalcyonMath.Range memory p) = state();
-        return HalcyonMath.exactOut(r, q, p, i, j, amountOut);
+        (uint256[] memory r, uint256[] memory q, PegloMath.Range memory p) = state();
+        return PegloMath.exactOut(r, q, p, i, j, amountOut);
     }
 
     function radiusNow() external view returns (uint256) {
-        return HalcyonMath.radius(HalcyonMath.virtualBalances(real, rates, range.floor));
+        return PegloMath.radius(PegloMath.virtualBalances(real, rates, range.floor));
     }
 
     function balance(uint256 k) external view returns (uint256) {
@@ -52,7 +52,7 @@ contract RangeHarness {
     }
 }
 
-contract HalcyonMathTest is Test {
+contract PegloMathTest is Test {
     uint256 constant W = 1e18;
     uint256 constant N = 5;
 
@@ -64,7 +64,7 @@ contract HalcyonMathTest is Test {
             real[k] = 1000 * W - floor_;
             rates[k] = W;
         }
-        return new RangeHarness(real, rates, HalcyonMath.Range(floor_, capRatio, fee, maxShare));
+        return new RangeHarness(real, rates, PegloMath.Range(floor_, capRatio, fee, maxShare));
     }
 
     function _default() internal returns (RangeHarness) {
@@ -122,7 +122,7 @@ contract HalcyonMathTest is Test {
             try h.swapIn(4, 0, 2 * W) {}
             catch (bytes memory err) {
                 bytes4 sel = bytes4(err);
-                assertTrue(sel == HalcyonMath.ExposureCap.selector || sel == HalcyonMath.RangeEdge.selector);
+                assertTrue(sel == PegloMath.ExposureCap.selector || sel == PegloMath.RangeEdge.selector);
                 break;
             }
         }
@@ -142,7 +142,7 @@ contract HalcyonMathTest is Test {
         }
         real[2] = 100e6; // 6-decimal stablecoin
         rates[2] = 1e30; // scale 1e6 -> 1e18
-        RangeHarness mixed = new RangeHarness(real, rates, HalcyonMath.Range(900 * W, 2.79e18, 1, 10_000));
+        RangeHarness mixed = new RangeHarness(real, rates, PegloMath.Range(900 * W, 2.79e18, 1, 10_000));
         uint256 outMixed = mixed.quoteIn(0, 2, 10 * W);
         uint256 outRef = _default().quoteIn(0, 2, 10 * W);
         assertEq(outMixed, (outRef + 1) / 1e12 - 1, "6-dec output equals 18-dec output scaled down");
@@ -150,7 +150,7 @@ contract HalcyonMathTest is Test {
 
     function test_RevertsOnSameToken() public {
         RangeHarness h = _default();
-        vm.expectRevert(HalcyonMath.SameToken.selector);
+        vm.expectRevert(PegloMath.SameToken.selector);
         h.quoteIn(1, 1, W);
     }
 
@@ -286,7 +286,7 @@ contract HalcyonMathTest is Test {
         }
         real[2] = 100e6;
         rates[2] = 1e30;
-        return new RangeHarness(real, rates, HalcyonMath.Range(900 * W, 2.79e18, 1, 10_000));
+        return new RangeHarness(real, rates, PegloMath.Range(900 * W, 2.79e18, 1, 10_000));
     }
 
     function testFuzz_ExactOutMatchesExactIn(uint256 amt, uint8 a, uint8 b) public {

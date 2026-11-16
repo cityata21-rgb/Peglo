@@ -4,12 +4,12 @@ pragma solidity 0.8.30;
 import {Script} from "forge-std/Script.sol";
 import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
-import {HalcyonRouter} from "../src/HalcyonRouter.sol";
-import {HalcyonLens} from "../src/HalcyonLens.sol";
-import {HalcyonExtruction} from "../src/HalcyonExtruction.sol";
-import {HalcyonBackstop} from "../src/HalcyonBackstop.sol";
-import {HalcyonBatchTaker} from "../src/HalcyonBatchTaker.sol";
-import {HalcyonOracle} from "../src/HalcyonOracle.sol";
+import {PegloRouter} from "../src/PegloRouter.sol";
+import {PegloLens} from "../src/PegloLens.sol";
+import {PegloExtruction} from "../src/PegloExtruction.sol";
+import {PegloBackstop} from "../src/PegloBackstop.sol";
+import {PegloBatchTaker} from "../src/PegloBatchTaker.sol";
+import {PegloOracle} from "../src/PegloOracle.sol";
 import {MockStablecoin} from "../src/mocks/MockStablecoin.sol";
 import {TestnetFeed} from "../src/mocks/TestnetFeed.sol";
 import {Aqua} from "@1inch/aqua/src/Aqua.sol";
@@ -49,12 +49,12 @@ contract Deploy is Script {
         address officialRouter = official
             ? OFFICIAL_ROUTER
             : address(new AquaSwapVMRouter(aqua, WETH, deployer, "1inch SwapVM v1.0", "1.0.2"));
-        HalcyonExtruction extruction = new HalcyonExtruction(aqua);
-        HalcyonBackstop backstop = new HalcyonBackstop(aqua);
-        HalcyonRouter router = new HalcyonRouter(aqua, WETH, deployer, address(extruction), address(backstop));
-        HalcyonLens lens = new HalcyonLens(aqua);
-        HalcyonBatchTaker batch = new HalcyonBatchTaker();
-        HalcyonOracle oracle = new HalcyonOracle(forwarder, deployer, REPORT_MAX_AGE, MAX_DEVIATION_BPS);
+        PegloExtruction extruction = new PegloExtruction(aqua);
+        PegloBackstop backstop = new PegloBackstop(aqua);
+        PegloRouter router = new PegloRouter(aqua, WETH, deployer, address(extruction), address(backstop));
+        PegloLens lens = new PegloLens(aqua);
+        PegloBatchTaker batch = new PegloBatchTaker();
+        PegloOracle oracle = new PegloOracle(forwarder, deployer, REPORT_MAX_AGE, MAX_DEVIATION_BPS);
         if (workflowOwner != address(0)) oracle.setWorkflowOwner(workflowOwner);
         if (coins.length == 0) coins = _mockCoins();
         for (uint256 k; k < coins.length; ++k) {

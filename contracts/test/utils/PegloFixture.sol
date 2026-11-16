@@ -6,28 +6,28 @@ import {Aqua} from "@1inch/aqua/src/Aqua.sol";
 import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 import {TakerTraitsLib} from "@1inch/swap-vm/src/libs/TakerTraits.sol";
 
-import {HalcyonRouter} from "../../src/HalcyonRouter.sol";
-import {HalcyonLens} from "../../src/HalcyonLens.sol";
-import {HalcyonConfig} from "../../src/HalcyonConfig.sol";
-import {HalcyonBatchTaker} from "../../src/HalcyonBatchTaker.sol";
-import {HalcyonExtruction} from "../../src/HalcyonExtruction.sol";
-import {HalcyonOracle} from "../../src/HalcyonOracle.sol";
-import {HalcyonBackstop} from "../../src/HalcyonBackstop.sol";
+import {PegloRouter} from "../../src/PegloRouter.sol";
+import {PegloLens} from "../../src/PegloLens.sol";
+import {PegloConfig} from "../../src/PegloConfig.sol";
+import {PegloBatchTaker} from "../../src/PegloBatchTaker.sol";
+import {PegloExtruction} from "../../src/PegloExtruction.sol";
+import {PegloOracle} from "../../src/PegloOracle.sol";
+import {PegloBackstop} from "../../src/PegloBackstop.sol";
 import {MockStablecoin} from "../../src/mocks/MockStablecoin.sol";
 
 address constant CRE_SIMULATION_OWNER = 0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa;
 
-abstract contract HalcyonFixture is Test {
+abstract contract PegloFixture is Test {
     uint256 internal N;
     uint256 internal constant W = 1e18;
 
     Aqua internal aqua;
-    HalcyonRouter internal router;
-    HalcyonLens internal lens;
-    HalcyonBatchTaker internal batch;
-    HalcyonExtruction internal pricer;
-    HalcyonOracle internal oracle;
-    HalcyonBackstop internal backstop;
+    PegloRouter internal router;
+    PegloLens internal lens;
+    PegloBatchTaker internal batch;
+    PegloExtruction internal pricer;
+    PegloOracle internal oracle;
+    PegloBackstop internal backstop;
 
     address[] internal tokens;
     uint8[] internal decimals;
@@ -43,12 +43,12 @@ abstract contract HalcyonFixture is Test {
 
     function setUp() public virtual {
         aqua = new Aqua();
-        pricer = new HalcyonExtruction(address(aqua));
-        backstop = new HalcyonBackstop(address(aqua));
-        router = new HalcyonRouter(address(aqua), address(0), address(this), address(pricer), address(backstop));
-        lens = new HalcyonLens(address(aqua));
-        batch = new HalcyonBatchTaker();
-        oracle = new HalcyonOracle(forwarder, address(this), 900, 50);
+        pricer = new PegloExtruction(address(aqua));
+        backstop = new PegloBackstop(address(aqua));
+        router = new PegloRouter(address(aqua), address(0), address(this), address(pricer), address(backstop));
+        lens = new PegloLens(address(aqua));
+        batch = new PegloBatchTaker();
+        oracle = new PegloOracle(forwarder, address(this), 900, 50);
         oracle.setWorkflowOwner(CRE_SIMULATION_OWNER);
 
         (string[] memory symbols, uint8[] memory decs) = specs();
@@ -83,7 +83,7 @@ abstract contract HalcyonFixture is Test {
     function config(uint16 feeBps, uint16 maxShareBps, bool withOracle)
         internal
         view
-        returns (HalcyonConfig.Config memory c)
+        returns (PegloConfig.Config memory c)
     {
         c.tokens = tokens;
         c.decimals = decimals;
@@ -95,7 +95,7 @@ abstract contract HalcyonFixture is Test {
         c.oracle = withOracle ? address(oracle) : address(0);
     }
 
-    function ship(address maker, HalcyonConfig.Config memory c, uint256 perToken, uint64 salt)
+    function ship(address maker, PegloConfig.Config memory c, uint256 perToken, uint64 salt)
         internal
         returns (ISwapVM.Order memory order, bytes32 strategyHash)
     {

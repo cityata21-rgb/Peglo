@@ -4,15 +4,15 @@ pragma solidity 0.8.30;
 import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 import {AquaSwapVMRouter} from "@1inch/swap-vm/src/routers/AquaSwapVMRouter.sol";
 
-import {HalcyonFixture} from "./utils/HalcyonFixture.sol";
-import {HalcyonPricing} from "../src/HalcyonPricing.sol";
-import {HalcyonExtruction} from "../src/HalcyonExtruction.sol";
-import {HalcyonBatchTaker} from "../src/HalcyonBatchTaker.sol";
-import {HalcyonMath} from "../src/HalcyonMath.sol";
-import {HalcyonOracle} from "../src/HalcyonOracle.sol";
+import {PegloFixture} from "./utils/PegloFixture.sol";
+import {PegloPricing} from "../src/PegloPricing.sol";
+import {PegloExtruction} from "../src/PegloExtruction.sol";
+import {PegloBatchTaker} from "../src/PegloBatchTaker.sol";
+import {PegloMath} from "../src/PegloMath.sol";
+import {PegloOracle} from "../src/PegloOracle.sol";
 import {MockStablecoin} from "../src/mocks/MockStablecoin.sol";
 
-contract HalcyonRouterTest is HalcyonFixture {
+contract PegloRouterTest is PegloFixture {
     function test_LpFundsStayInWallet() public {
         (, bytes32 h) = ship(lp, config(1, 10_000, false), 100, 1);
         for (uint256 k; k < N; ++k) {
@@ -87,7 +87,7 @@ contract HalcyonRouterTest is HalcyonFixture {
 
         fund(trader, 4, unit(4), address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.Halted.selector, tokens[4]));
+        vm.expectRevert(abi.encodeWithSelector(PegloOracle.Halted.selector, tokens[4]));
         router.swap(order, tokens[4], tokens[0], unit(4), takerData(true, trader));
 
         uint256 out = swapIn(order, 0, 4, unit(0));
@@ -104,7 +104,7 @@ contract HalcyonRouterTest is HalcyonFixture {
         hlt[0] = true;
         bytes memory report = abi.encode(t, p, hlt, uint64(block.timestamp));
 
-        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.UnauthorizedForwarder.selector, address(this)));
+        vm.expectRevert(abi.encodeWithSelector(PegloOracle.UnauthorizedForwarder.selector, address(this)));
         oracle.onReport(meta(), report);
 
         vm.prank(forwarder);
@@ -118,7 +118,7 @@ contract HalcyonRouterTest is HalcyonFixture {
 
         fund(trader, 2, unit(2), address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.Halted.selector, tokens[2]));
+        vm.expectRevert(abi.encodeWithSelector(PegloOracle.Halted.selector, tokens[2]));
         router.swap(order, tokens[2], tokens[0], unit(2), takerData(true, trader));
     }
 
@@ -144,7 +144,7 @@ contract HalcyonRouterTest is HalcyonFixture {
     }
 
     function test_ReportsRefusedUntilWorkflowOwnerSet() public {
-        HalcyonOracle fresh = new HalcyonOracle(forwarder, address(this), 900, 50);
+        PegloOracle fresh = new PegloOracle(forwarder, address(this), 900, 50);
         address[] memory t = new address[](1);
         uint256[] memory p = new uint256[](1);
         bool[] memory hlt = new bool[](1);
@@ -152,7 +152,7 @@ contract HalcyonRouterTest is HalcyonFixture {
         hlt[0] = true;
         bytes memory report = abi.encode(t, p, hlt, uint64(block.timestamp));
         vm.prank(forwarder);
-        vm.expectRevert(HalcyonOracle.WorkflowOwnerNotSet.selector);
+        vm.expectRevert(PegloOracle.WorkflowOwnerNotSet.selector);
         fresh.onReport("", report);
         assertFalse(fresh.isHalted(tokens[0]));
     }
@@ -171,7 +171,7 @@ contract HalcyonRouterTest is HalcyonFixture {
 
         fund(trader, 3, unit(3), address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.Halted.selector, tokens[3]));
+        vm.expectRevert(abi.encodeWithSelector(PegloOracle.Halted.selector, tokens[3]));
         router.swap(order, tokens[3], tokens[0], unit(3), takerData(true, trader));
     }
 
@@ -200,9 +200,9 @@ contract HalcyonRouterTest is HalcyonFixture {
         uint256 amount = 40 * unit(0);
         uint256 single = quoteIn(a, 0, 1, amount);
 
-        HalcyonBatchTaker.Leg[] memory legs = new HalcyonBatchTaker.Leg[](2);
-        legs[0] = HalcyonBatchTaker.Leg(ISwapVM(address(router)), a, amount / 2);
-        legs[1] = HalcyonBatchTaker.Leg(ISwapVM(address(router)), b, amount - amount / 2);
+        PegloBatchTaker.Leg[] memory legs = new PegloBatchTaker.Leg[](2);
+        legs[0] = PegloBatchTaker.Leg(ISwapVM(address(router)), a, amount / 2);
+        legs[1] = PegloBatchTaker.Leg(ISwapVM(address(router)), b, amount - amount / 2);
         fund(trader, 0, amount, address(batch));
         vm.prank(trader);
         uint256 out = batch.swapExactIn(tokens[0], tokens[1], legs, single, trader, uint40(block.timestamp));
@@ -213,8 +213,8 @@ contract HalcyonRouterTest is HalcyonFixture {
 
     function test_BatchMinOutProtects() public {
         (ISwapVM.Order memory a,) = ship(lp, config(1, 10_000, false), 100, 1);
-        HalcyonBatchTaker.Leg[] memory legs = new HalcyonBatchTaker.Leg[](1);
-        legs[0] = HalcyonBatchTaker.Leg(ISwapVM(address(router)), a, unit(0));
+        PegloBatchTaker.Leg[] memory legs = new PegloBatchTaker.Leg[](1);
+        legs[0] = PegloBatchTaker.Leg(ISwapVM(address(router)), a, unit(0));
         fund(trader, 0, unit(0), address(batch));
         vm.prank(trader);
         vm.expectRevert();
@@ -259,7 +259,7 @@ contract HalcyonRouterTest is HalcyonFixture {
 
         fund(trader, 4, unit(4), address(router));
         vm.prank(trader);
-        vm.expectRevert(HalcyonMath.RangeEdge.selector);
+        vm.expectRevert(PegloMath.RangeEdge.selector);
         router.swap(order, tokens[4], tokens[2], unit(4), takerData(true, trader));
     }
 
@@ -283,7 +283,7 @@ contract HalcyonRouterTest is HalcyonFixture {
     function test_ExtructionOnOfficialRouterMatchesNative() public {
         AquaSwapVMRouter official =
             new AquaSwapVMRouter(address(aqua), address(0), address(this), "1inch SwapVM v1.0", "1.0.2");
-        HalcyonExtruction ext = new HalcyonExtruction(address(aqua));
+        PegloExtruction ext = new PegloExtruction(address(aqua));
 
         (ISwapVM.Order memory native,) = ship(lp, config(5, 10_000, false), 100, 1);
 
@@ -308,7 +308,7 @@ contract HalcyonRouterTest is HalcyonFixture {
     function test_BatchAcrossBothVenuesInOneTx() public {
         AquaSwapVMRouter official =
             new AquaSwapVMRouter(address(aqua), address(0), address(this), "1inch SwapVM v1.0", "1.0.2");
-        HalcyonExtruction ext = new HalcyonExtruction(address(aqua));
+        PegloExtruction ext = new PegloExtruction(address(aqua));
         (ISwapVM.Order memory native,) = ship(lp, config(1, 10_000, false), 100, 1);
 
         ISwapVM.Order memory viaExt = lens.buildExtructionOrder(address(ext), lp2, config(1, 10_000, false), 1);
@@ -322,9 +322,9 @@ contract HalcyonRouterTest is HalcyonFixture {
         vm.prank(lp2);
         aqua.ship(address(official), abi.encode(viaExt), tokens, amounts);
 
-        HalcyonBatchTaker.Leg[] memory legs = new HalcyonBatchTaker.Leg[](2);
-        legs[0] = HalcyonBatchTaker.Leg(ISwapVM(address(router)), native, 20 * unit(3));
-        legs[1] = HalcyonBatchTaker.Leg(ISwapVM(address(official)), viaExt, 20 * unit(3));
+        PegloBatchTaker.Leg[] memory legs = new PegloBatchTaker.Leg[](2);
+        legs[0] = PegloBatchTaker.Leg(ISwapVM(address(router)), native, 20 * unit(3));
+        legs[1] = PegloBatchTaker.Leg(ISwapVM(address(official)), viaExt, 20 * unit(3));
         fund(trader, 3, 40 * unit(3), address(batch));
         vm.prank(trader);
         uint256 out = batch.swapExactIn(tokens[3], tokens[1], legs, 39 * unit(1), trader, uint40(block.timestamp));
@@ -357,6 +357,6 @@ contract HalcyonRouterTest is HalcyonFixture {
             real[k] = aquaBalance(lp, h, k);
             rates[k] = 10 ** (36 - decimals[k]);
         }
-        return HalcyonMath.radius(HalcyonMath.virtualBalances(real, rates, 900 * W));
+        return PegloMath.radius(PegloMath.virtualBalances(real, rates, 900 * W));
     }
 }

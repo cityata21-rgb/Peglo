@@ -6,26 +6,26 @@ import {SwapVM} from "@1inch/swap-vm/src/SwapVM.sol";
 import {AquaOpcodes} from "@1inch/swap-vm/src/opcodes/AquaOpcodes.sol";
 import {Context, SwapQuery, SwapRegisters} from "@1inch/swap-vm/src/libs/VM.sol";
 
-interface IHalcyonPricer {
+interface IPegloPricer {
     function price(SwapQuery calldata query, SwapRegisters calldata swap, bytes calldata args)
         external
         view
         returns (SwapRegisters memory);
 }
 
-contract HalcyonRouter is Simulator, SwapVM, AquaOpcodes {
-    IHalcyonPricer public immutable PRICER;
-    IHalcyonPricer public immutable BACKSTOP;
+contract PegloRouter is Simulator, SwapVM, AquaOpcodes {
+    IPegloPricer public immutable PRICER;
+    IPegloPricer public immutable BACKSTOP;
 
     constructor(address aqua, address weth, address owner, address pricer, address backstop)
-        SwapVM(aqua, weth, owner, "Halcyon", "1")
+        SwapVM(aqua, weth, owner, "Peglo", "1")
         AquaOpcodes(aqua)
     {
-        PRICER = IHalcyonPricer(pricer);
-        BACKSTOP = IHalcyonPricer(backstop);
+        PRICER = IPegloPricer(pricer);
+        BACKSTOP = IPegloPricer(backstop);
     }
 
-    function halcyonOpcode() external pure returns (uint8) {
+    function pegloOpcode() external pure returns (uint8) {
         return uint8(_opcodes().length);
     }
 
@@ -48,15 +48,15 @@ contract HalcyonRouter is Simulator, SwapVM, AquaOpcodes {
         for (uint256 k; k < base.length; ++k) {
             all[k] = base[k];
         }
-        all[base.length] = _halcyonTick;
-        all[base.length + 1] = _halcyonBackstop;
+        all[base.length] = _pegloTick;
+        all[base.length + 1] = _pegloBackstop;
     }
 
-    function _halcyonTick(Context memory ctx, bytes calldata args) internal view {
+    function _pegloTick(Context memory ctx, bytes calldata args) internal view {
         ctx.swap = PRICER.price(ctx.query, ctx.swap, args);
     }
 
-    function _halcyonBackstop(Context memory ctx, bytes calldata args) internal view {
+    function _pegloBackstop(Context memory ctx, bytes calldata args) internal view {
         ctx.swap = BACKSTOP.price(ctx.query, ctx.swap, args);
     }
 }

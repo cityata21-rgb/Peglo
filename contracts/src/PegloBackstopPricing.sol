@@ -4,14 +4,14 @@ pragma solidity 0.8.30;
 import {IAqua} from "@1inch/aqua/src/interfaces/IAqua.sol";
 import {SwapQuery, SwapRegisters} from "@1inch/swap-vm/src/libs/VM.sol";
 
-import {HalcyonPricing} from "./HalcyonPricing.sol";
-import {HalcyonBackstopConfig} from "./HalcyonBackstopConfig.sol";
-import {IHalcyonOracle} from "./interfaces/IHalcyonOracle.sol";
+import {PegloPricing} from "./PegloPricing.sol";
+import {PegloBackstopConfig} from "./PegloBackstopConfig.sol";
+import {IPegloOracle} from "./interfaces/IPegloOracle.sol";
 
 /// @notice Standby liquidity for depegs. Buys a token only while the oracle marks it depegged, pays only in
 /// healthy tokens, at the depeg market price (never above face value) minus a discount that grows linearly from
 /// start to end as the per-token cap fills. The maker's absorbed amount is its Aqua balance of that token.
-library HalcyonBackstopPricing {
+library PegloBackstopPricing {
     uint256 internal constant WAD = 1e18;
     uint256 internal constant BPS_TO_WAD = 1e14;
 
@@ -29,10 +29,10 @@ library HalcyonBackstopPricing {
     {
         if (!q.isExactIn) revert ExactInOnly();
         if (s.amountOut != 0) revert RecomputeDetected();
-        HalcyonBackstopConfig.Config memory c = HalcyonBackstopConfig.decode(args);
-        (uint256[] memory real, uint256 i, uint256 j) = HalcyonPricing.load(aqua, app, q, c.tokens);
+        PegloBackstopConfig.Config memory c = PegloBackstopConfig.decode(args);
+        (uint256[] memory real, uint256 i, uint256 j) = PegloPricing.load(aqua, app, q, c.tokens);
 
-        IHalcyonOracle oracle = IHalcyonOracle(c.oracle);
+        IPegloOracle oracle = IPegloOracle(c.oracle);
         uint256 marketIn = oracle.depegPrice(q.tokenIn);
         (uint256 faceIn,,) = oracle.priceOf(q.tokenIn);
         (uint256 priceOut,, bool outHalted) = oracle.priceOf(q.tokenOut);
@@ -54,7 +54,7 @@ library HalcyonBackstopPricing {
             })
         );
         if (out > real[j]) revert InsufficientReserve();
-        HalcyonPricing.checkWallet(aqua, q.maker, q.tokenOut, out);
+        PegloPricing.checkWallet(aqua, q.maker, q.tokenOut, out);
         s.amountOut = out;
         return s;
     }

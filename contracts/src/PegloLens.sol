@@ -5,18 +5,18 @@ import {IAqua} from "@1inch/aqua/src/interfaces/IAqua.sol";
 import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 import {MakerTraitsLib} from "@1inch/swap-vm/src/libs/MakerTraits.sol";
 
-import {HalcyonConfig} from "./HalcyonConfig.sol";
-import {HalcyonBackstopConfig} from "./HalcyonBackstopConfig.sol";
-import {HalcyonPricing} from "./HalcyonPricing.sol";
+import {PegloConfig} from "./PegloConfig.sol";
+import {PegloBackstopConfig} from "./PegloBackstopConfig.sol";
+import {PegloPricing} from "./PegloPricing.sol";
 
-interface IHalcyonRouter {
-    function halcyonOpcode() external pure returns (uint8);
+interface IPegloRouter {
+    function pegloOpcode() external pure returns (uint8);
     function backstopOpcode() external pure returns (uint8);
     function saltOpcode() external pure returns (uint8);
     function hash(ISwapVM.Order calldata order) external view returns (bytes32);
 }
 
-contract HalcyonLens {
+contract PegloLens {
     uint8 public constant OFFICIAL_EXTRUCTION_OPCODE = 32;
     uint8 public constant OFFICIAL_SALT_OPCODE = 20;
 
@@ -28,47 +28,47 @@ contract HalcyonLens {
         AQUA = IAqua(aqua);
     }
 
-    function encodeConfig(HalcyonConfig.Config calldata c) public pure returns (bytes memory) {
-        return HalcyonConfig.encode(c);
+    function encodeConfig(PegloConfig.Config calldata c) public pure returns (bytes memory) {
+        return PegloConfig.encode(c);
     }
 
-    function buildOrder(address router, address maker, HalcyonConfig.Config calldata c, uint64 salt)
+    function buildOrder(address router, address maker, PegloConfig.Config calldata c, uint64 salt)
         external
         view
         returns (ISwapVM.Order memory)
     {
-        bytes memory args = HalcyonConfig.encode(c);
+        bytes memory args = PegloConfig.encode(c);
         bytes memory program = bytes.concat(
-            _instruction(IHalcyonRouter(router).halcyonOpcode(), args),
-            _instruction(IHalcyonRouter(router).saltOpcode(), abi.encodePacked(salt))
+            _instruction(IPegloRouter(router).pegloOpcode(), args),
+            _instruction(IPegloRouter(router).saltOpcode(), abi.encodePacked(salt))
         );
         return _order(maker, program);
     }
 
-    function buildExtructionOrder(address extruction, address maker, HalcyonConfig.Config calldata c, uint64 salt)
+    function buildExtructionOrder(address extruction, address maker, PegloConfig.Config calldata c, uint64 salt)
         external
         pure
         returns (ISwapVM.Order memory)
     {
-        bytes memory args = abi.encodePacked(extruction, HalcyonConfig.encode(c));
+        bytes memory args = abi.encodePacked(extruction, PegloConfig.encode(c));
         bytes memory program = bytes.concat(
             _instruction(OFFICIAL_EXTRUCTION_OPCODE, args), _instruction(OFFICIAL_SALT_OPCODE, abi.encodePacked(salt))
         );
         return _order(maker, program);
     }
 
-    function encodeBackstopConfig(HalcyonBackstopConfig.Config calldata c) public pure returns (bytes memory) {
-        return HalcyonBackstopConfig.encode(c);
+    function encodeBackstopConfig(PegloBackstopConfig.Config calldata c) public pure returns (bytes memory) {
+        return PegloBackstopConfig.encode(c);
     }
 
-    function buildBackstopOrder(address router, address maker, HalcyonBackstopConfig.Config calldata c, uint64 salt)
+    function buildBackstopOrder(address router, address maker, PegloBackstopConfig.Config calldata c, uint64 salt)
         external
         view
         returns (ISwapVM.Order memory)
     {
         bytes memory program = bytes.concat(
-            _instruction(IHalcyonRouter(router).backstopOpcode(), HalcyonBackstopConfig.encode(c)),
-            _instruction(IHalcyonRouter(router).saltOpcode(), abi.encodePacked(salt))
+            _instruction(IPegloRouter(router).backstopOpcode(), PegloBackstopConfig.encode(c)),
+            _instruction(IPegloRouter(router).saltOpcode(), abi.encodePacked(salt))
         );
         return _order(maker, program);
     }
@@ -76,10 +76,10 @@ contract HalcyonLens {
     function buildBackstopExtructionOrder(
         address backstop,
         address maker,
-        HalcyonBackstopConfig.Config calldata c,
+        PegloBackstopConfig.Config calldata c,
         uint64 salt
     ) external pure returns (ISwapVM.Order memory) {
-        bytes memory args = abi.encodePacked(backstop, HalcyonBackstopConfig.encode(c));
+        bytes memory args = abi.encodePacked(backstop, PegloBackstopConfig.encode(c));
         bytes memory program = bytes.concat(
             _instruction(OFFICIAL_EXTRUCTION_OPCODE, args), _instruction(OFFICIAL_SALT_OPCODE, abi.encodePacked(salt))
         );
@@ -91,7 +91,7 @@ contract HalcyonLens {
         view
         returns (bytes32 strategyHash, uint256[] memory amounts, bool active)
     {
-        strategyHash = IHalcyonRouter(router).hash(order);
+        strategyHash = IPegloRouter(router).hash(order);
         amounts = new uint256[](tokens.length);
         active = true;
         for (uint256 k; k < tokens.length; ++k) {
@@ -104,7 +104,7 @@ contract HalcyonLens {
     function spendable(address maker, address[] calldata tokens) external view returns (uint256[] memory amounts) {
         amounts = new uint256[](tokens.length);
         for (uint256 k; k < tokens.length; ++k) {
-            amounts[k] = HalcyonPricing.spendable(AQUA, maker, tokens[k]);
+            amounts[k] = PegloPricing.spendable(AQUA, maker, tokens[k]);
         }
     }
 

@@ -5,14 +5,14 @@ import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 import {AquaSwapVMRouter} from "@1inch/swap-vm/src/routers/AquaSwapVMRouter.sol";
 
 import {FxFixture} from "./utils/FxFixture.sol";
-import {HalcyonBackstopConfig} from "../src/HalcyonBackstopConfig.sol";
-import {HalcyonBackstopPricing} from "../src/HalcyonBackstopPricing.sol";
-import {HalcyonOracle} from "../src/HalcyonOracle.sol";
-import {HalcyonPricing} from "../src/HalcyonPricing.sol";
+import {PegloBackstopConfig} from "../src/PegloBackstopConfig.sol";
+import {PegloBackstopPricing} from "../src/PegloBackstopPricing.sol";
+import {PegloOracle} from "../src/PegloOracle.sol";
+import {PegloPricing} from "../src/PegloPricing.sol";
 import {MockFeed} from "../src/mocks/MockFeed.sol";
 import {MockStablecoin} from "../src/mocks/MockStablecoin.sol";
 
-contract HalcyonBackstopTest is FxFixture {
+contract PegloBackstopTest is FxFixture {
     uint32 internal constant MARKET_AGE = 90_000;
 
     MockFeed internal usdeMarket;
@@ -29,7 +29,7 @@ contract HalcyonBackstopTest is FxFixture {
     function bsConfig(uint16 start, uint16 end, uint256 capUsd)
         internal
         view
-        returns (HalcyonBackstopConfig.Config memory c)
+        returns (PegloBackstopConfig.Config memory c)
     {
         c.tokens = tokens;
         c.decimals = decimals;
@@ -39,7 +39,7 @@ contract HalcyonBackstopTest is FxFixture {
         c.oracle = address(oracle);
     }
 
-    function shipBackstop(address maker, HalcyonBackstopConfig.Config memory c, uint256 pledgeUsd, uint64 salt)
+    function shipBackstop(address maker, PegloBackstopConfig.Config memory c, uint256 pledgeUsd, uint64 salt)
         internal
         returns (ISwapVM.Order memory order, bytes32 h)
     {
@@ -76,7 +76,7 @@ contract HalcyonBackstopTest is FxFixture {
         (ISwapVM.Order memory order,) = shipBackstop(lp, bsConfig(200, 1000, 10_000), 10_000, 1);
         fund(trader, usde, 100 * W, address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.NotDepegged.selector, tokens[usde]));
+        vm.expectRevert(abi.encodeWithSelector(PegloOracle.NotDepegged.selector, tokens[usde]));
         router.swap(order, tokens[usde], tokens[usdc], 100 * W, takerData(true, trader));
     }
 
@@ -106,7 +106,7 @@ contract HalcyonBackstopTest is FxFixture {
         swapIn(order, usde, usdc, 900 * W);
         fund(trader, usde, 200 * W, address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(HalcyonBackstopPricing.BackstopFull.selector, tokens[usde], 100 * W));
+        vm.expectRevert(abi.encodeWithSelector(PegloBackstopPricing.BackstopFull.selector, tokens[usde], 100 * W));
         router.swap(order, tokens[usde], tokens[usdc], 200 * W, takerData(true, trader));
     }
 
@@ -116,7 +116,7 @@ contract HalcyonBackstopTest is FxFixture {
         oracle.guardianSet(tokens[dai], true);
         fund(trader, usde, 100 * W, address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(HalcyonBackstopPricing.PayoutHalted.selector, tokens[dai]));
+        vm.expectRevert(abi.encodeWithSelector(PegloBackstopPricing.PayoutHalted.selector, tokens[dai]));
         router.swap(order, tokens[usde], tokens[dai], 100 * W, takerData(true, trader));
     }
 
@@ -125,7 +125,7 @@ contract HalcyonBackstopTest is FxFixture {
         depeg(usde, 0.93e18);
         fund(trader, usde, 200 * W, address(router));
         vm.prank(trader);
-        vm.expectRevert(HalcyonBackstopPricing.ExactInOnly.selector);
+        vm.expectRevert(PegloBackstopPricing.ExactInOnly.selector);
         router.swap(order, tokens[usde], tokens[usdc], 50 * unit(usdc), takerData(false, trader));
     }
 
@@ -136,7 +136,7 @@ contract HalcyonBackstopTest is FxFixture {
         oracle.guardianSet(tokens[usde], false);
         fund(trader, usde, 100 * W, address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.NotDepegged.selector, tokens[usde]));
+        vm.expectRevert(abi.encodeWithSelector(PegloOracle.NotDepegged.selector, tokens[usde]));
         router.swap(order, tokens[usde], tokens[usdc], 100 * W, takerData(true, trader));
     }
 
@@ -160,7 +160,7 @@ contract HalcyonBackstopTest is FxFixture {
         uint256 amountIn = amountFor(brz, 10);
         fund(trader, brz, amountIn, address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.StaleRate.selector, tokens[brz]));
+        vm.expectRevert(abi.encodeWithSelector(PegloOracle.StaleRate.selector, tokens[brz]));
         router.swap(order, tokens[brz], tokens[usdc], amountIn, takerData(true, trader));
     }
 
@@ -187,7 +187,7 @@ contract HalcyonBackstopTest is FxFixture {
         depeg(usde, 0.93e18);
         fund(trader, usde, 100 * W, address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.Halted.selector, tokens[usde]));
+        vm.expectRevert(abi.encodeWithSelector(PegloOracle.Halted.selector, tokens[usde]));
         router.swap(fx, tokens[usde], tokens[usdc], 100 * W, takerData(true, trader));
 
         uint256 paid = swapIn(bs, usde, usdc, 8000 * W);
@@ -197,7 +197,7 @@ contract HalcyonBackstopTest is FxFixture {
         uint256 amountIn = amountFor(dai, 3000);
         fund(trader, dai, amountIn, address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(HalcyonPricing.InsufficientLiquidity.selector, tokens[usdc], left));
+        vm.expectRevert(abi.encodeWithSelector(PegloPricing.InsufficientLiquidity.selector, tokens[usdc], left));
         router.swap(fx, tokens[dai], tokens[usdc], amountIn, takerData(true, trader));
 
         assertGt(swapIn(fx, dai, eurc, amountFor(dai, 100)), 0, "healthy pairs keep trading");
@@ -206,7 +206,7 @@ contract HalcyonBackstopTest is FxFixture {
     function test_BackstopOnOfficialRouterMatchesNative() public {
         AquaSwapVMRouter official =
             new AquaSwapVMRouter(address(aqua), address(0), address(this), "1inch SwapVM v1.0", "1.0.2");
-        HalcyonBackstopConfig.Config memory c = bsConfig(200, 1000, 10_000);
+        PegloBackstopConfig.Config memory c = bsConfig(200, 1000, 10_000);
         (ISwapVM.Order memory native,) = shipBackstop(lp, c, 10_000, 1);
 
         ISwapVM.Order memory viaExt = lens.buildBackstopExtructionOrder(address(backstop), lp2, c, 1);

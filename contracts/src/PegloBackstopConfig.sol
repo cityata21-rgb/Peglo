@@ -3,7 +3,7 @@ pragma solidity 0.8.30;
 
 /// @notice Packed backstop config. Layout: n | tokens[n] (20B) | decimals[n] (1B) | startDiscount (2B)
 /// | endDiscount (2B) | capPerToken (16B, USD 1e18 at face value) | oracle (20B)
-library HalcyonBackstopConfig {
+library PegloBackstopConfig {
     uint256 internal constant MAX_TOKENS = 9;
     uint256 internal constant MAX_DISCOUNT_BPS = 5000;
     uint256 internal constant FIXED_BYTES = 40;

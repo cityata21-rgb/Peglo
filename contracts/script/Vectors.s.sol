@@ -5,46 +5,46 @@ import {Script} from "forge-std/Script.sol";
 import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 import {MakerTraits} from "@1inch/swap-vm/src/libs/MakerTraits.sol";
 
-import {HalcyonRouter} from "../src/HalcyonRouter.sol";
-import {HalcyonLens} from "../src/HalcyonLens.sol";
-import {HalcyonConfig} from "../src/HalcyonConfig.sol";
-import {HalcyonMath} from "../src/HalcyonMath.sol";
+import {PegloRouter} from "../src/PegloRouter.sol";
+import {PegloLens} from "../src/PegloLens.sol";
+import {PegloConfig} from "../src/PegloConfig.sol";
+import {PegloMath} from "../src/PegloMath.sol";
 
 contract MathHarness {
     function exactIn(
         uint256[] memory real,
         uint256[] memory rates,
-        HalcyonMath.Range memory p,
+        PegloMath.Range memory p,
         uint256 i,
         uint256 j,
         uint256 a
     ) external pure returns (uint256) {
-        return HalcyonMath.exactIn(real, rates, p, i, j, a);
+        return PegloMath.exactIn(real, rates, p, i, j, a);
     }
 
     function exactOut(
         uint256[] memory real,
         uint256[] memory rates,
-        HalcyonMath.Range memory p,
+        PegloMath.Range memory p,
         uint256 i,
         uint256 j,
         uint256 a
     ) external pure returns (uint256) {
-        return HalcyonMath.exactOut(real, rates, p, i, j, a);
+        return PegloMath.exactOut(real, rates, p, i, j, a);
     }
 
     function radius(uint256[] memory real, uint256[] memory rates, uint256 floor) external pure returns (uint256) {
-        return HalcyonMath.radius(HalcyonMath.virtualBalances(real, rates, floor));
+        return PegloMath.radius(PegloMath.virtualBalances(real, rates, floor));
     }
 }
 
 contract Vectors is Script {
     function run() external {
-        HalcyonRouter router = new HalcyonRouter(address(1), address(0), address(0xBEEF), address(2), address(3));
-        HalcyonLens lens = new HalcyonLens(address(1));
+        PegloRouter router = new PegloRouter(address(1), address(0), address(0xBEEF), address(2), address(3));
+        PegloLens lens = new PegloLens(address(1));
         MathHarness h = new MathHarness();
 
-        HalcyonConfig.Config memory c;
+        PegloConfig.Config memory c;
         c.tokens = new address[](5);
         c.decimals = new uint8[](5);
         uint8[5] memory decs = [6, 6, 18, 6, 18];
@@ -77,8 +77,8 @@ contract Vectors is Script {
             vm.toString(officialOrder.data),
             "\",\"officialHash\":\"",
             vm.toString(keccak256(abi.encode(officialOrder))),
-            "\",\"halcyonOpcode\":",
-            vm.toString(router.halcyonOpcode()),
+            "\",\"pegloOpcode\":",
+            vm.toString(router.pegloOpcode()),
             ",\"cases\":[",
             _cases(h),
             "]}"
@@ -97,7 +97,7 @@ contract Vectors is Script {
                 real[k] = units * 10 ** decs[k] + (uint256(keccak256(abi.encode(seed, k, 1))) % 10 ** decs[k]);
                 rates[k] = 10 ** (36 - decs[k]);
             }
-            HalcyonMath.Range memory p = HalcyonMath.Range({
+            PegloMath.Range memory p = PegloMath.Range({
                 floor: (seed % 4) * 300e18,
                 sumCapRatio: 2.9e18,
                 feeBps: uint16(seed % 31),

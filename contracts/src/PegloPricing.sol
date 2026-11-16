@@ -5,11 +5,11 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IAqua} from "@1inch/aqua/src/interfaces/IAqua.sol";
 import {SwapQuery, SwapRegisters} from "@1inch/swap-vm/src/libs/VM.sol";
 
-import {HalcyonMath} from "./HalcyonMath.sol";
-import {HalcyonConfig} from "./HalcyonConfig.sol";
-import {IHalcyonOracle} from "./interfaces/IHalcyonOracle.sol";
+import {PegloMath} from "./PegloMath.sol";
+import {PegloConfig} from "./PegloConfig.sol";
+import {IPegloOracle} from "./interfaces/IPegloOracle.sol";
 
-library HalcyonPricing {
+library PegloPricing {
     error TokenNotInRange(address token);
     error StrategyMismatch(address token, uint8 tokensCount);
     error RecomputeDetected();
@@ -20,26 +20,26 @@ library HalcyonPricing {
         view
         returns (SwapRegisters memory)
     {
-        HalcyonConfig.Decoded memory d = HalcyonConfig.decode(args);
+        PegloConfig.Decoded memory d = PegloConfig.decode(args);
         uint256 n = d.tokens.length;
         (uint256[] memory real, uint256 i, uint256 j) = load(aqua, app, q, d.tokens);
 
         if (d.oracle != address(0)) {
-            (uint256[] memory p, uint256 fxMask) = IHalcyonOracle(d.oracle).prices(d.tokens, q.tokenIn);
+            (uint256[] memory p, uint256 fxMask) = IPegloOracle(d.oracle).prices(d.tokens, q.tokenIn);
             for (uint256 k; k < n; ++k) {
-                d.rates[k] = d.rates[k] * p[k] / HalcyonMath.WAD;
+                d.rates[k] = d.rates[k] * p[k] / PegloMath.WAD;
             }
             if (fxMask & ((1 << i) | (1 << j)) != 0) d.range.feeBps = d.fxFeeBps;
         }
 
         if (q.isExactIn) {
             if (s.amountOut != 0) revert RecomputeDetected();
-            s.amountOut = HalcyonMath.exactIn(real, d.rates, d.range, i, j, s.amountIn);
+            s.amountOut = PegloMath.exactIn(real, d.rates, d.range, i, j, s.amountIn);
             checkWallet(aqua, q.maker, q.tokenOut, s.amountOut);
         } else {
             if (s.amountIn != 0) revert RecomputeDetected();
             checkWallet(aqua, q.maker, q.tokenOut, s.amountOut);
-            s.amountIn = HalcyonMath.exactOut(real, d.rates, d.range, i, j, s.amountOut);
+            s.amountIn = PegloMath.exactOut(real, d.rates, d.range, i, j, s.amountOut);
         }
         return s;
     }

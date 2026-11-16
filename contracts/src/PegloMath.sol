@@ -3,7 +3,7 @@ pragma solidity 0.8.30;
 
 /// @notice Orbital sphere pricing for one concentrated range over n stablecoins.
 /// v_k = real_k * rate_k / 1e18 + floor, invariant sum_k (r - v_k)^2 = r^2, r re-derived from balances.
-library HalcyonMath {
+library PegloMath {
     uint256 internal constant WAD = 1e18;
     uint256 internal constant BPS = 10_000;
     uint256 internal constant ROUNDING_BUFFER = 1;

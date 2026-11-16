@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.30;
 
-import {HalcyonMath} from "./HalcyonMath.sol";
+import {PegloMath} from "./PegloMath.sol";
 
 /// @notice Packed range config. SwapVM caps instruction args at 255 bytes: n <= 9 natively, n <= 8 via Extruction.
 /// Layout: n | tokens[n] (20B) | decimals[n] (1B) | floor (16B) | sumCapRatio (8B) | fee (2B) | fxFee (2B)
 /// | maxShare (2B) | oracle (20B)
-library HalcyonConfig {
+library PegloConfig {
     uint256 internal constant MAX_TOKENS = 9;
     uint256 internal constant MAX_FEE_BPS = 1000;
     uint256 internal constant FIXED_BYTES = 50;
@@ -25,7 +25,7 @@ library HalcyonConfig {
     struct Decoded {
         address[] tokens;
         uint256[] rates;
-        HalcyonMath.Range range;
+        PegloMath.Range range;
         uint16 fxFeeBps;
         address oracle;
     }
@@ -41,7 +41,7 @@ library HalcyonConfig {
         uint256 n = c.tokens.length;
         if (n < 2 || n > MAX_TOKENS || c.decimals.length != n) revert BadTokenCount();
         if (c.feeBps > MAX_FEE_BPS || c.fxFeeBps > MAX_FEE_BPS) revert BadFee();
-        if (c.maxShareBps == 0 || c.maxShareBps > HalcyonMath.BPS) revert BadMaxShare();
+        if (c.maxShareBps == 0 || c.maxShareBps > PegloMath.BPS) revert BadMaxShare();
         out = abi.encodePacked(uint8(n));
         for (uint256 k; k < n; ++k) {
             if (k > 0 && c.tokens[k] <= c.tokens[k - 1]) revert UnsortedTokens();
@@ -77,6 +77,6 @@ library HalcyonConfig {
         d.range.maxShareBps = uint16(bytes2(a[o + 28:o + 30]));
         d.oracle = address(bytes20(a[o + 30:o + 50]));
         if (d.range.feeBps > MAX_FEE_BPS || d.fxFeeBps > MAX_FEE_BPS) revert BadFee();
-        if (d.range.maxShareBps == 0 || d.range.maxShareBps > HalcyonMath.BPS) revert BadMaxShare();
+        if (d.range.maxShareBps == 0 || d.range.maxShareBps > PegloMath.BPS) revert BadMaxShare();
     }
 }

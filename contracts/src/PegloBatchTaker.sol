@@ -6,7 +6,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 import {TakerTraitsLib} from "@1inch/swap-vm/src/libs/TakerTraits.sol";
 
-contract HalcyonBatchTaker {
+contract PegloBatchTaker {
     using SafeERC20 for IERC20;
 
     struct Leg {

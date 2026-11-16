@@ -3,13 +3,13 @@ pragma solidity 0.8.30;
 
 import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 
-import {HalcyonFixture} from "./HalcyonFixture.sol";
-import {HalcyonConfig} from "../../src/HalcyonConfig.sol";
-import {HalcyonMath} from "../../src/HalcyonMath.sol";
+import {PegloFixture} from "./PegloFixture.sol";
+import {PegloConfig} from "../../src/PegloConfig.sol";
+import {PegloMath} from "../../src/PegloMath.sol";
 import {MockFeed} from "../../src/mocks/MockFeed.sol";
 import {MockStablecoin} from "../../src/mocks/MockStablecoin.sol";
 
-abstract contract FxFixture is HalcyonFixture {
+abstract contract FxFixture is PegloFixture {
     uint32 internal constant FEED_AGE = 4500;
     uint64 internal constant NO_EDGE = type(uint64).max;
 
@@ -57,14 +57,14 @@ abstract contract FxFixture is HalcyonFixture {
     function fxConfig(uint16 fee, uint16 fxFee, uint16 maxShare, uint64 cap)
         internal
         view
-        returns (HalcyonConfig.Config memory c)
+        returns (PegloConfig.Config memory c)
     {
         c = config(fee, maxShare, true);
         c.fxFeeBps = fxFee;
         c.sumCapRatio = cap;
     }
 
-    function deep(uint16 fee, uint16 fxFee) internal view returns (HalcyonConfig.Config memory c) {
+    function deep(uint16 fee, uint16 fxFee) internal view returns (PegloConfig.Config memory c) {
         c = fxConfig(fee, fxFee, 10_000, NO_EDGE);
         c.floor = uint128(90_000 * W);
     }
@@ -81,7 +81,7 @@ abstract contract FxFixture is HalcyonFixture {
         return amount * price(k) / unit(k);
     }
 
-    function shipUsd(address maker, HalcyonConfig.Config memory c, uint256 usd, uint64 salt)
+    function shipUsd(address maker, PegloConfig.Config memory c, uint256 usd, uint64 salt)
         internal
         returns (ISwapVM.Order memory order, bytes32 h)
     {
@@ -121,6 +121,6 @@ abstract contract FxFixture is HalcyonFixture {
             real[k] = aquaBalance(maker, h, k);
             rates[k] = 10 ** (36 - decimals[k]) * price(k) / W;
         }
-        return HalcyonMath.radius(HalcyonMath.virtualBalances(real, rates, floor));
+        return PegloMath.radius(PegloMath.virtualBalances(real, rates, floor));
     }
 }
