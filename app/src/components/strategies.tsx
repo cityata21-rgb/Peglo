@@ -1,6 +1,6 @@
 'use client'
 
-import { type Market, PRESETS, edgeUtilization } from '@stabrix/sdk'
+import { type Market, PRESETS, edgeUtilization } from '@halcyon/sdk'
 import { KindTag, Skeleton, VenueTag } from '@/components/ui'
 import { formatUsd, shortAddress } from '@/lib/format'
 import { type LiveStrategy, backstopFill, isMine, presetOf, strategyUsd } from '@/lib/strategy'

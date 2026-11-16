@@ -4,11 +4,11 @@ import {
   decodeStrategy,
   parseBackstopProgram,
   parseProgram,
-  stabrixBatchTakerAbi,
-  stabrixOracleAbi,
-  stabrixRouterAbi,
-} from '@stabrix/sdk'
-import type { SolanaStabrixClient } from '@stabrix/sdk/solana'
+  halcyonBatchTakerAbi,
+  halcyonOracleAbi,
+  halcyonRouterAbi,
+} from '@halcyon/sdk'
+import type { SolanaHalcyonClient } from '@halcyon/sdk/solana'
 import { type Address, type Hex, type PublicClient, parseEventLogs } from 'viem'
 
 export type StrategyKind = 'range' | 'backstop' | 'other'
@@ -98,18 +98,18 @@ export async function fetchActivity(client: PublicClient, d: Deployment): Promis
       out.push({ ...base(e), type: 'dock', maker: e.args.maker, app: e.args.app, strategy: kinds.get(key) ?? 'other' })
     }
   }
-  for (const e of parseEventLogs({ abi: stabrixBatchTakerAbi, logs, eventName: 'BatchSwapped' })) {
+  for (const e of parseEventLogs({ abi: halcyonBatchTakerAbi, logs, eventName: 'BatchSwapped' })) {
     if (e.address.toLowerCase() !== d.batchTaker.toLowerCase()) continue
     out.push({ ...base(e), type: 'swap', ...e.args })
   }
-  for (const e of parseEventLogs({ abi: stabrixOracleAbi, logs, eventName: ['StatusUpdated', 'GuardianOverride'] })) {
+  for (const e of parseEventLogs({ abi: halcyonOracleAbi, logs, eventName: ['StatusUpdated', 'GuardianOverride'] })) {
     if (e.address.toLowerCase() !== d.oracle.toLowerCase()) continue
     if (e.eventName === 'StatusUpdated') out.push({ ...base(e), type: 'cre', token: e.args.token, halted: e.args.halted, priceE18: e.args.priceE18 })
     else out.push({ ...base(e), type: 'guardian', token: e.args.token, halted: e.args.halted })
   }
 
   const fills: Fill[] = []
-  for (const e of parseEventLogs({ abi: stabrixRouterAbi, logs, eventName: 'Swapped' })) {
+  for (const e of parseEventLogs({ abi: halcyonRouterAbi, logs, eventName: 'Swapped' })) {
     if (!apps.has(e.address.toLowerCase())) continue
     fills.push({ hash: e.transactionHash, block: e.blockNumber, time: null, ...e.args })
   }
@@ -125,7 +125,7 @@ export async function fetchActivity(client: PublicClient, d: Deployment): Promis
   }
 }
 
-export async function fetchSolanaActivity(client: SolanaStabrixClient): Promise<ActivityData> {
+export async function fetchSolanaActivity(client: SolanaHalcyonClient): Promise<ActivityData> {
   const rows = await client.activity(40)
   const kinds = new Map<string, StrategyKind>()
   for (const r of rows) if (r.event.kind === 'open') kinds.set(r.event.strategy.toBase58(), r.event.strategyKind)

@@ -1,6 +1,6 @@
 'use client'
 
-import { type Market, PRESETS, type PresetId, type TokenInfo, type Venue } from '@stabrix/sdk'
+import { type Market, PRESETS, type PresetId, type TokenInfo, type Venue } from '@halcyon/sdk'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
@@ -11,7 +11,7 @@ import { Button, CoinDot, KindTag, Label, Panel, SectionHead, Skeleton, VenueTag
 import { CURRENCY } from '@/lib/coins'
 import { formatAmount, formatUsd, toUnits } from '@/lib/format'
 import { priceOf } from '@/lib/market'
-import { useBalances, useMarket, useStabrix } from '@/lib/stabrix'
+import { useBalances, useMarket, useHalcyon } from '@/lib/halcyon'
 import {
   BACKSTOP_PRESETS,
   type BackstopPresetId,
@@ -176,7 +176,7 @@ function venueOf(id: VenueId, target: string): Venue {
 }
 
 function RangeForm({ held, balances, market }: { held: TokenInfo[]; balances: bigint[] | undefined; market: Market | undefined }) {
-  const { deployment, client, wallet, kind } = useStabrix()
+  const { deployment, client, wallet, kind } = useHalcyon()
   const solana = kind === 'solana'
   const [picked, setPicked] = useState<string[] | null>(null)
   const [preset, setPreset] = useState<PresetId>('balanced')
@@ -303,7 +303,7 @@ function RangeForm({ held, balances, market }: { held: TokenInfo[]; balances: bi
 }
 
 function BackstopForm({ held, balances, market }: { held: TokenInfo[]; balances: bigint[] | undefined; market: Market | undefined }) {
-  const { deployment, client, wallet, kind } = useStabrix()
+  const { deployment, client, wallet, kind } = useHalcyon()
   const solana = kind === 'solana'
   const tokens = deployment.tokens
   const defaultPay = held.filter((t) => t.symbol === 'USDC' || t.symbol === 'USDT')
@@ -445,7 +445,7 @@ function BackstopForm({ held, balances, market }: { held: TokenInfo[]; balances:
 }
 
 function WalletPanel({ market, balances, mine }: { market: Market | undefined; balances: bigint[] | undefined; mine: LiveStrategy[] }) {
-  const { deployment, kind } = useStabrix()
+  const { deployment, kind } = useHalcyon()
   const walletUsd = deployment.tokens.reduce((s, t, k) => s + valueUsd(balances?.[k] ?? 0n, t.decimals, priceOf(market, t)), 0)
   const prices = market?.prices
   const inRanges = prices ? mine.filter((s) => s.kind === 'range').reduce((s, x) => s + strategyUsd(x, prices), 0) : 0
@@ -488,7 +488,7 @@ function WalletPanel({ market, balances, mine }: { market: Market | undefined; b
 }
 
 function StrategyCard({ s, market, onClose, busy }: { s: LiveStrategy; market: Market; onClose: () => void; busy: boolean }) {
-  const { client } = useStabrix()
+  const { client } = useHalcyon()
   const usd = strategyUsd(s, market.prices)
   const short = shortCoins(s, market.prices)
   const fill = s.kind === 'backstop' ? backstopFill(s, market.prices) : []
@@ -545,7 +545,7 @@ function StrategyCard({ s, market, onClose, busy }: { s: LiveStrategy; market: M
 }
 
 export default function LiquidityPage() {
-  const { deployment, client, signer, wallet, kind } = useStabrix()
+  const { deployment, client, signer, wallet, kind } = useHalcyon()
   const market = useMarket()
   const balances = useBalances(signer?.address)
   const [mode, setMode] = useState<Mode>('range')

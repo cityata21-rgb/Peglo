@@ -8,7 +8,7 @@ import { type Activity, activityGroup } from '@/lib/activity'
 import { explorerFor } from '@/lib/chain'
 import { DEV_ACCOUNTS } from '@/lib/config'
 import { formatAmount, formatRate, shortAddress } from '@/lib/format'
-import { useActivity, useStabrix } from '@/lib/stabrix'
+import { useActivity, useHalcyon } from '@/lib/halcyon'
 
 type Filter = 'all' | 'swaps' | 'liquidity' | 'oracle'
 
@@ -42,7 +42,7 @@ function TagFor({ a, oracle }: { a: Activity; oracle: string }) {
 }
 
 export default function ActivityPage() {
-  const { deployment, kind } = useStabrix()
+  const { deployment, kind } = useHalcyon()
   const activity = useActivity()
   const [filter, setFilter] = useState<Filter>('all')
   const explorer = DEV_ACCOUNTS ? undefined : explorerFor(deployment.chainId)

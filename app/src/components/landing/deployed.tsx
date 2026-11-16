@@ -56,12 +56,12 @@ export function Deployed() {
     ...d.tokens.map((t): [string, string, string] => [t.symbol, 'Coin mint', t.address]),
   ]
   const rows: [string, string, string][] = d.kind === 'solana' ? solanaRows : [
-    ['StabrixRouter', 'SwapVM router with opcodes 34 and 35', d.router],
-    ['StabrixExtruction', 'FX range pricing for the 1inch router', d.extruction],
-    ['StabrixBackstop', 'Backstop pricing for the 1inch router', d.backstop],
-    ['StabrixOracle', 'Chainlink CRE consumer', d.oracle],
-    ['StabrixBatchTaker', 'One trade across both routers', d.batchTaker],
-    ['StabrixLens', 'Order builder and balances', d.lens],
+    ['HalcyonRouter', 'SwapVM router with opcodes 34 and 35', d.router],
+    ['HalcyonExtruction', 'FX range pricing for the 1inch router', d.extruction],
+    ['HalcyonBackstop', 'Backstop pricing for the 1inch router', d.backstop],
+    ['HalcyonOracle', 'Chainlink CRE consumer', d.oracle],
+    ['HalcyonBatchTaker', 'One trade across both routers', d.batchTaker],
+    ['HalcyonLens', 'Order builder and balances', d.lens],
     ['Aqua', official ? '1inch, official deployment' : '1inch source, deployed by us', d.aqua],
     ['AquaSwapVMRouter', official ? '1inch, official deployment' : '1inch source, deployed by us', d.officialRouter],
   ]

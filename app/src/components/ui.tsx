@@ -1,6 +1,6 @@
 'use client'
 
-import type { TokenInfo } from '@stabrix/sdk'
+import type { TokenInfo } from '@halcyon/sdk'
 import { ChevronDown, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import type { ButtonHTMLAttributes, ReactNode } from 'react'

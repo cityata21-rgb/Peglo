@@ -1,4 +1,4 @@
-import { type LiveBackstop, type LiveRange, PRESETS, type PresetId, type PriceInfo, backstopRoom } from '@stabrix/sdk'
+import { type LiveBackstop, type LiveRange, PRESETS, type PresetId, type PriceInfo, backstopRoom } from '@halcyon/sdk'
 
 export type LiveStrategy = LiveRange | LiveBackstop
 

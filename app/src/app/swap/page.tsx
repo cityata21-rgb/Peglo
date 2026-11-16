@@ -1,6 +1,6 @@
 'use client'
 
-import type { Quote, TokenInfo } from '@stabrix/sdk'
+import type { Quote, TokenInfo } from '@halcyon/sdk'
 import { ArrowDownUp } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { TxStatus } from '@/components/tx-status'
@@ -10,7 +10,7 @@ import { copyFor } from '@/lib/chain'
 import { CURRENCY } from '@/lib/coins'
 import { formatAmount, formatPct, formatRate, formatUsd, shortAddress, toUnits } from '@/lib/format'
 import { formatRatio, priceOf, units, usd, withoutMaker } from '@/lib/market'
-import { useBalances, useMarket, useOracleStatus, useStabrix } from '@/lib/stabrix'
+import { useBalances, useMarket, useOracleStatus, useHalcyon } from '@/lib/halcyon'
 import { useTx } from '@/lib/tx'
 
 const SLIPPAGES = [10, 30, 100]
@@ -29,7 +29,7 @@ function Field({ children }: { children: React.ReactNode }) {
 }
 
 export default function SwapPage() {
-  const { deployment, client, signer, wallet, kind } = useStabrix()
+  const { deployment, client, signer, wallet, kind } = useHalcyon()
   const copy = copyFor(deployment.chainId)
   const market = useMarket()
   const oracle = useOracleStatus()

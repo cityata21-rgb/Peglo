@@ -11,10 +11,10 @@ import {
   type PriceInfo,
   type Quote,
   type RangeConfig,
-  StabrixClient,
+  HalcyonClient,
   type TokenInfo,
-} from '@stabrix/sdk'
-import { type SolanaDeployment, type SolanaSigner, SolanaStabrixClient } from '@stabrix/sdk/solana'
+} from '@halcyon/sdk'
+import { type SolanaDeployment, type SolanaSigner, SolanaHalcyonClient } from '@halcyon/sdk/solana'
 import { Connection } from '@solana/web3.js'
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
@@ -65,7 +65,7 @@ export interface WalletChoice {
   icon?: string
 }
 
-export interface StabrixApi {
+export interface HalcyonApi {
   readonly tokens: TokenInfo[]
   token(address: string): TokenInfo
   market(): Promise<Market>
@@ -83,14 +83,14 @@ export interface StabrixApi {
   balancesOf(owner: string): Promise<bigint[]>
 }
 
-interface StabrixContext {
+interface HalcyonContext {
   kind: 'evm' | 'solana'
   deployment: Deployment
   rpcUrl: string
   chain: Chain
   publicClient: PublicClient | null
-  client: StabrixApi
-  solana: SolanaStabrixClient | null
+  client: HalcyonApi
+  solana: SolanaHalcyonClient | null
   signer: Signer | null
   wallet: AppWallet | null
   setSigner: (s: Signer | null) => void
@@ -99,7 +99,7 @@ interface StabrixContext {
   disconnect: () => void
 }
 
-const Ctx = createContext<StabrixContext | null>(null)
+const Ctx = createContext<HalcyonContext | null>(null)
 
 interface RawDeployment extends Omit<Deployment, 'fromBlock'> {
   kind?: 'solana'
@@ -150,7 +150,7 @@ async function fetchDeployment(network: string): Promise<Loaded> {
   }
 }
 
-const NETWORK_KEY = 'stabrix.network'
+const NETWORK_KEY = 'halcyon.network'
 
 interface NetworkContext {
   network: string | null
@@ -200,7 +200,7 @@ function SolanaInner({ deployment, sol, rpcUrl, children }: { deployment: Deploy
   const chain = useChain(deployment, rpcUrl)
   const solana = useMemo(() => {
     const endpoint = rpcUrl.startsWith('/') ? `${window.location.origin}${rpcUrl}` : rpcUrl
-    return new SolanaStabrixClient(new Connection(endpoint, 'confirmed'), sol)
+    return new SolanaHalcyonClient(new Connection(endpoint, 'confirmed'), sol)
   }, [rpcUrl, sol])
   const options = useSolanaWallets(true)
   const [signer, setSigner] = useState<Signer | null>(null)
@@ -262,13 +262,13 @@ function SolanaInner({ deployment, sol, rpcUrl, children }: { deployment: Deploy
     rememberSolanaWallet(null)
   }
 
-  const value: StabrixContext = {
+  const value: HalcyonContext = {
     kind: 'solana',
     deployment,
     rpcUrl,
     chain,
     publicClient: null,
-    client: solana as unknown as StabrixApi,
+    client: solana as unknown as HalcyonApi,
     solana,
     signer,
     wallet,
@@ -286,7 +286,7 @@ function Inner({ deployment, rpcUrl, children }: { deployment: Deployment; rpcUr
     () => createPublicClient({ chain, transport: http(rpcUrl, { batch: true }) }) as PublicClient,
     [chain, rpcUrl],
   )
-  const client = useMemo(() => new StabrixClient(publicClient, deployment), [publicClient, deployment])
+  const client = useMemo(() => new HalcyonClient(publicClient, deployment), [publicClient, deployment])
 
   const [signer, setSigner] = useState<Signer | null>(null)
   const [provider, setProvider] = useState<Eip1193 | null>(null)
@@ -371,13 +371,13 @@ function Inner({ deployment, rpcUrl, children }: { deployment: Deployment; rpcUr
     rememberWallet(null)
   }
 
-  const value: StabrixContext = {
+  const value: HalcyonContext = {
     kind: 'evm',
     deployment,
     rpcUrl,
     chain,
     publicClient,
-    client: client as unknown as StabrixApi,
+    client: client as unknown as HalcyonApi,
     solana: null,
     signer,
     wallet,
@@ -445,7 +445,7 @@ export function RequireDeployment({ children }: { children: ReactNode }) {
   )
 }
 
-export function StabrixProvider({ children }: { children: ReactNode }) {
+export function HalcyonProvider({ children }: { children: ReactNode }) {
   const [network, setNetwork] = useState<string | null>(null)
   const [loaded, setLoaded] = useState<{ current: string | null; available: string[] }>({ current: null, available: [] })
   const [qc, setQc] = useState(newQueryClient)
@@ -471,35 +471,35 @@ export function StabrixProvider({ children }: { children: ReactNode }) {
   )
 }
 
-export function useMaybeStabrix() {
+export function useMaybeHalcyon() {
   return useContext(Ctx)
 }
 
-export function useStabrix() {
+export function useHalcyon() {
   const ctx = useContext(Ctx)
-  if (!ctx) throw new Error('useStabrix outside provider')
+  if (!ctx) throw new Error('useHalcyon outside provider')
   return ctx
 }
 
-const usePoll = () => (useStabrix().kind === 'solana' ? POLL_MS * 4 : POLL_MS)
+const usePoll = () => (useHalcyon().kind === 'solana' ? POLL_MS * 4 : POLL_MS)
 
 export function useRanges() {
-  const { client } = useStabrix()
+  const { client } = useHalcyon()
   return useQuery({ queryKey: ['ranges'], queryFn: () => client.listRanges(), refetchInterval: usePoll() })
 }
 
 export function useMarket() {
-  const { client } = useStabrix()
+  const { client } = useHalcyon()
   return useQuery({ queryKey: ['market'], queryFn: () => client.market(), refetchInterval: usePoll() })
 }
 
 export function useOracleStatus() {
-  const { client } = useStabrix()
+  const { client } = useHalcyon()
   return useQuery({ queryKey: ['oracle-status'], queryFn: () => client.oracleStatus(), refetchInterval: usePoll() })
 }
 
 export function useActivity() {
-  const { deployment, publicClient, solana } = useStabrix()
+  const { deployment, publicClient, solana } = useHalcyon()
   return useQuery({
     queryKey: ['activity', deployment.batchTaker],
     queryFn: () => (solana ? fetchSolanaActivity(solana) : fetchActivity(publicClient!, deployment)),
@@ -508,7 +508,7 @@ export function useActivity() {
 }
 
 export function useBalances(owner: Address | undefined) {
-  const { client } = useStabrix()
+  const { client } = useHalcyon()
   return useQuery({
     queryKey: ['balances', owner],
     queryFn: () => client.balancesOf(owner!),
@@ -534,7 +534,7 @@ const feedAbi = [
 ] as const
 
 export function useChainlinkPrices() {
-  const { deployment, publicClient } = useStabrix()
+  const { deployment, publicClient } = useHalcyon()
   return useQuery({
     queryKey: ['feeds', deployment.chainId],
     enabled: deployment.chainId === 8453,

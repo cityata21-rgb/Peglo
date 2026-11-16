@@ -1,7 +1,7 @@
 import {
   type PresetId,
   type Range,
-  StabrixMathError,
+  HalcyonMathError,
   WAD,
   defaultMaxShareBps,
   designRange,
@@ -9,7 +9,7 @@ import {
   presetById,
   scaleRange,
   spotPrice,
-} from '@stabrix/sdk'
+} from '@halcyon/sdk'
 
 export const SIM_COINS = ['USDC', 'USDT', 'DAI', 'USDS', 'USDe'] as const
 const N = SIM_COINS.length
@@ -42,7 +42,7 @@ export async function impactCurve(preset: PresetId | 'flat', perCoinUsd = 1_000_
       const out = exactIn(real, RATES, r, 0, 2, amountIn)
       points.push({ usd, bps: (Number(amountIn - out) / Number(amountIn)) * 10_000 })
     } catch (e) {
-      if (!(e instanceof StabrixMathError)) throw e
+      if (!(e instanceof HalcyonMathError)) throw e
       break
     }
   }
@@ -82,7 +82,7 @@ function dumpTo(p: Pool, target: number) {
       p.real[j] = p.real[j]! - out
       refusals = 0
     } catch (e) {
-      if (!(e instanceof StabrixMathError)) throw e
+      if (!(e instanceof HalcyonMathError)) throw e
       refusals++
     }
   }

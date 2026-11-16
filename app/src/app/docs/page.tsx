@@ -133,9 +133,9 @@ function QA({ q, children }: { q: string; children: ReactNode }) {
   )
 }
 
-const SDK = `import { StabrixClient, WAD } from '@stabrix/sdk'
+const SDK = `import { HalcyonClient, WAD } from '@halcyon/sdk'
 
-const client = new StabrixClient(publicClient, deployment)
+const client = new HalcyonClient(publicClient, deployment)
 
 const market = await client.market()
 const quote = client.quoteExactIn(market, USDC, EURC, 1_000_000_000n)
@@ -154,7 +154,7 @@ const LOCAL = `npm install
 (cd contracts && npm install)
 
 FORK_PORT=8556 DEPLOYMENT_NAME=base-fork-fx ./ops/devnet.sh
-npm run price-api -w @stabrix/ops
+npm run price-api -w @halcyon/ops
 cd app && NEXT_PUBLIC_DEV_ACCOUNTS=1 NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8556 \\
   DEPLOYMENT_NAME=base-fork-fx npx next dev -p 3000
 
@@ -162,7 +162,7 @@ cd cre && cre workflow simulate depeg-sentinel -T fork-settings --broadcast \\
   --non-interactive --trigger-index 0
 
 cd contracts && forge test
-npm test -w @stabrix/sdk
+npm test -w @halcyon/sdk
 cd cre/depeg-sentinel && go test ./...`
 
 const FEEDS: [string, string, string][] = [
@@ -394,7 +394,7 @@ export default function DocsPage() {
               'For a healthy input coin only FX ranges quote. For a halted input coin only backstops quote.',
               'The trade is cut into 64 slices. Each slice goes to the strategy that pays the most for it; slices halve near the limits so nothing is left unfilled that could be filled.',
               "A strategy drops out when the next slice would hit its edge, its exposure cap, or the maker's spendable balance. Your own strategies are skipped when you trade.",
-              'StabrixBatchTaker pulls the total input once, fills every leg on its router, then checks your minimum output and a 10 minute deadline. Either every leg fills or the whole trade reverts.',
+              'HalcyonBatchTaker pulls the total input once, fills every leg on its router, then checks your minimum output and a 10 minute deadline. Either every leg fills or the whole trade reverts.',
               'Because the SDK runs the same bigint math as the contracts, quotes equal on-chain results to the wei.',
             ]}
           />
@@ -436,7 +436,7 @@ export default function DocsPage() {
         <Section id="cre">
           <P>
             The workflow (<C>cre/depeg-sentinel</C>, Go) runs every 30 seconds. It reads every oracle status and Chainlink feed in one Multicall3 call, fetches CoinGecko and
-            DefiLlama with a median across nodes, decides, and writes one signed report to <C>StabrixOracle</C>.
+            DefiLlama with a median across nodes, decides, and writes one signed report to <C>HalcyonOracle</C>.
           </P>
           <Table
             head={['Rule', 'Value']}
@@ -495,12 +495,12 @@ export default function DocsPage() {
           <Table
             head={['Contract', 'Role']}
             rows={[
-              ['StabrixRouter', 'SwapVM v1.0.2 Aqua router with two new instructions: StabrixTick (opcode 34) and StabrixBackstop (opcode 35).'],
-              ['StabrixExtruction', 'Range pricing for the official 1inch router, reached through Extruction (opcode 32).'],
-              ['StabrixBackstop', 'Backstop pricing for both routers.'],
-              ['StabrixOracle', 'Chainlink CRE consumer: rates, halts, depeg prices, feed bounds and guardian.'],
-              ['StabrixBatchTaker', 'Fills many legs across both routers in one transaction with a minimum output and deadline.'],
-              ['StabrixLens', 'Builds orders and reads strategy balances and spendable amounts.'],
+              ['HalcyonRouter', 'SwapVM v1.0.2 Aqua router with two new instructions: HalcyonTick (opcode 34) and HalcyonBackstop (opcode 35).'],
+              ['HalcyonExtruction', 'Range pricing for the official 1inch router, reached through Extruction (opcode 32).'],
+              ['HalcyonBackstop', 'Backstop pricing for both routers.'],
+              ['HalcyonOracle', 'Chainlink CRE consumer: rates, halts, depeg prices, feed bounds and guardian.'],
+              ['HalcyonBatchTaker', 'Fills many legs across both routers in one transaction with a minimum output and deadline.'],
+              ['HalcyonLens', 'Builds orders and reads strategy balances and spendable amounts.'],
             ]}
           />
           <P>
@@ -540,7 +540,7 @@ export default function DocsPage() {
 
         <Section id="sdk">
           <P>
-            <C>@stabrix/sdk</C> (TypeScript, viem) reads the market, quotes, routes and ships. Amounts are bigints in token units; USD amounts use 18 decimals.
+            <C>@halcyon/sdk</C> (TypeScript, viem) reads the market, quotes, routes and ships. Amounts are bigints in token units; USD amounts use 18 decimals.
           </P>
           <Code>{SDK}</Code>
           <Table

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ChevronDown } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { RequireDeployment, useMaybeStabrix, useNetwork, useOracleStatus, useStabrix } from '@/lib/stabrix'
+import { RequireDeployment, useMaybeHalcyon, useNetwork, useOracleStatus, useHalcyon } from '@/lib/halcyon'
 import { DEV_ACCOUNTS, NETWORK_LABELS } from '@/lib/config'
 import { AccountMenu } from './account-menu'
 import { ThemeToggle } from './theme-toggle'
@@ -24,7 +24,7 @@ const NAV = [
 
 
 function NetworkPill() {
-  const { chain } = useStabrix()
+  const { chain } = useHalcyon()
   const oracle = useOracleStatus()
   const halted = oracle.data?.filter((s) => s.halted).length ?? 0
   return (
@@ -101,7 +101,7 @@ function Nav({ path, className }: { path: string; className: string }) {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const path = usePathname()
-  const ctx = useMaybeStabrix()
+  const ctx = useMaybeHalcyon()
   if (path === '/' || path === '/deck') return <>{children}</>
   return (
     <>

@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type { ReactNode } from 'react'
 import { AppShell } from '@/components/app-shell'
-import { StabrixProvider } from '@/lib/stabrix'
+import { HalcyonProvider } from '@/lib/halcyon'
 import { THEME_BOOT } from '@/lib/theme-boot'
 import './globals.css'
 
@@ -24,9 +24,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
       </head>
       <body className="min-h-dvh">
-        <StabrixProvider>
+        <HalcyonProvider>
           <AppShell>{children}</AppShell>
-        </StabrixProvider>
+        </HalcyonProvider>
         <Analytics />
       </body>
     </html>

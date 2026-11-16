@@ -2,10 +2,10 @@
 
 import { CHAIN_NAMES as NAMES, explorerFor } from '@/lib/chain'
 import { DEV_ACCOUNTS } from '@/lib/config'
-import { useMaybeStabrix } from '@/lib/stabrix'
+import { useMaybeHalcyon } from '@/lib/halcyon'
 
 export function DocsDeployment() {
-  const ctx = useMaybeStabrix()
+  const ctx = useMaybeHalcyon()
   if (!ctx) return <p className="text-[14px] text-muted">No deployment is loaded in this app yet.</p>
   const d = ctx.deployment
   const explorer = DEV_ACCOUNTS ? undefined : explorerFor(d.chainId)
@@ -17,12 +17,12 @@ export function DocsDeployment() {
         ...d.tokens.map((t): [string, string] => [`${t.symbol} mint`, t.address]),
       ]
     : [
-    ['StabrixRouter', d.router],
-    ['StabrixExtruction', d.extruction],
-    ['StabrixBackstop', d.backstop],
-    ['StabrixOracle', d.oracle],
-    ['StabrixBatchTaker', d.batchTaker],
-    ['StabrixLens', d.lens],
+    ['HalcyonRouter', d.router],
+    ['HalcyonExtruction', d.extruction],
+    ['HalcyonBackstop', d.backstop],
+    ['HalcyonOracle', d.oracle],
+    ['HalcyonBatchTaker', d.batchTaker],
+    ['HalcyonLens', d.lens],
     ['Aqua', d.aqua],
     ['AquaSwapVMRouter', d.officialRouter],
   ]

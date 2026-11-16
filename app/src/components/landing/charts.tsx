@@ -1,6 +1,6 @@
 'use client'
 
-import { PRESETS, type PresetId } from '@stabrix/sdk'
+import { PRESETS, type PresetId } from '@halcyon/sdk'
 import { useEffect, useMemo, useState } from 'react'
 import { BACKSTOP_PRESETS } from '@/lib/strategy'
 import { type DepegPoint, type ImpactPoint, backstopPay, depegCurve, impactCurve } from '@/lib/sim'

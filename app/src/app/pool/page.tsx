@@ -1,6 +1,6 @@
 'use client'
 
-import { PRESETS } from '@stabrix/sdk'
+import { PRESETS } from '@halcyon/sdk'
 import { useMemo, useState } from 'react'
 import { OrbitMap } from '@/components/orbit-map'
 import { StrategyTable } from '@/components/strategies'
@@ -8,14 +8,14 @@ import { COIN_HEX, CoinDot, Label, Panel, SectionHead, Skeleton, Stat, TokenSele
 import { CURRENCY } from '@/lib/coins'
 import { depthBands } from '@/lib/depth'
 import { formatUsd } from '@/lib/format'
-import { useActivity, useMarket, useStabrix } from '@/lib/stabrix'
+import { useActivity, useMarket, useHalcyon } from '@/lib/halcyon'
 import { presetOf, strategyUsd, valueUsd } from '@/lib/strategy'
 
 const DAY = 86_400
 const compactUsd = (v: number) => (v >= 1e6 ? `$${(v / 1e6).toFixed(1)}M` : v >= 1e3 ? `$${Math.round(v / 1e3)}k` : `$${Math.round(v)}`)
 
 export default function PoolPage() {
-  const { deployment, signer } = useStabrix()
+  const { deployment, signer } = useHalcyon()
   const market = useMarket()
   const activity = useActivity()
   const m = market.data

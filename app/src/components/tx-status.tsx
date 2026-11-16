@@ -4,11 +4,11 @@ import { ArrowUpRight, CheckCircle2, Loader2, XCircle } from 'lucide-react'
 import { explorerFor } from '@/lib/chain'
 import { DEV_ACCOUNTS } from '@/lib/config'
 import { shortAddress } from '@/lib/format'
-import { useMaybeStabrix } from '@/lib/stabrix'
+import { useMaybeHalcyon } from '@/lib/halcyon'
 import type { TxState } from '@/lib/tx'
 
 export function TxStatus({ state }: { state: TxState }) {
-  const ctx = useMaybeStabrix()
+  const ctx = useMaybeHalcyon()
   if (state.status === 'idle') return null
   const tone = {
     pending: 'border-line bg-paper text-ink',

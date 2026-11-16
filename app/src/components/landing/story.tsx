@@ -206,7 +206,7 @@ const AQUA = [
   },
   {
     title: 'Two new instructions',
-    text: 'StabrixTick (opcode 34) prices the sphere curve. StabrixBackstop (opcode 35) buys a depegged coin only while Chainlink says it is broken.',
+    text: 'HalcyonTick (opcode 34) prices the sphere curve. HalcyonBackstop (opcode 35) buys a depegged coin only while Chainlink says it is broken.',
   },
   {
     title: 'Your official router',
@@ -231,7 +231,7 @@ const FLOW = [
   ['One EVM read', '9 Chainlink feeds + oracle'],
   ['Two price APIs', 'median across nodes'],
   ['Policy', 'halt · resume · push rates'],
-  ['Signed report', 'to StabrixOracle'],
+  ['Signed report', 'to HalcyonOracle'],
   ['Every strategy', 'ranges and backstops'],
 ]
 
@@ -402,13 +402,13 @@ export function Story() {
           </div>
           <p className="arch-link">one transaction</p>
           <div className="node strong">
-            <b>StabrixBatchTaker</b>
+            <b>HalcyonBatchTaker</b>
             <span>splits the trade across every maker</span>
           </div>
           <p className="arch-link">each leg</p>
           <div className="arch-row">
             <div className="node">
-              <b>StabrixRouter</b>
+              <b>HalcyonRouter</b>
               <span>SwapVM, opcodes 34 and 35</span>
             </div>
             <div className="node">
@@ -418,7 +418,7 @@ export function Story() {
           </div>
           <p className="arch-link">same pricing</p>
           <div className="node strong">
-            <b>StabrixPricing · StabrixBackstopPricing</b>
+            <b>HalcyonPricing · HalcyonBackstopPricing</b>
             <span>checks the maker's wallet, asks the oracle</span>
           </div>
           <div className="arch-row">
@@ -427,7 +427,7 @@ export function Story() {
               <span>pulls from the maker's wallet on fill</span>
             </div>
             <div className="node">
-              <b>StabrixOracle</b>
+              <b>HalcyonOracle</b>
               <span>rates and halts from Chainlink CRE</span>
             </div>
           </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import type { SolanaSigner } from '@stabrix/sdk/solana'
+import type { SolanaSigner } from '@halcyon/sdk/solana'
 import { SolanaSignTransaction, type SolanaSignTransactionFeature } from '@solana/wallet-standard-features'
 import { PublicKey, VersionedTransaction } from '@solana/web3.js'
 import { getWallets } from '@wallet-standard/app'
@@ -22,7 +22,7 @@ export interface SolanaWalletOption {
   wallet: StandardWallet
 }
 
-const KEY = 'stabrix-solana-wallet'
+const KEY = 'halcyon-solana-wallet'
 
 export const solanaChainOf = (cluster: string) => (cluster === 'mainnet-beta' ? 'solana:mainnet' : cluster === 'devnet' ? 'solana:devnet' : 'solana:localnet')
 

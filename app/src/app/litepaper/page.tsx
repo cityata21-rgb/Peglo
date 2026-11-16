@@ -351,7 +351,7 @@ export default function Litepaper() {
           <H3>Base</H3>
           <Bullets
             items={[
-              'Two new 1inch SwapVM instructions: StabrixTick (opcode 34) for ranges and StabrixBackstop (opcode 35).',
+              'Two new 1inch SwapVM instructions: HalcyonTick (opcode 34) for ranges and HalcyonBackstop (opcode 35).',
               'Both also run on 1inch’s official AquaSwapVMRouter through its Extruction opcode, with no 1inch contract modified.',
               'An 8-coin range config packs into 219 bytes, under SwapVM’s 255-byte argument limit.',
               'A Chainlink CRE workflow in Go reports rates and halts with consensus across nodes.',

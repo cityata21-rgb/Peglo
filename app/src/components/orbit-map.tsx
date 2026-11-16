@@ -1,6 +1,6 @@
 'use client'
 
-import { type LiveRange, edgeUtilization, virtualBalances } from '@stabrix/sdk'
+import { type LiveRange, edgeUtilization, virtualBalances } from '@halcyon/sdk'
 import { presetOf } from '@/lib/strategy'
 import { COIN_HEX } from './ui'
 

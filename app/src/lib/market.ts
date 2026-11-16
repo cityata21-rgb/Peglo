@@ -1,4 +1,4 @@
-import type { Market, PriceInfo, TokenInfo } from '@stabrix/sdk'
+import type { Market, PriceInfo, TokenInfo } from '@halcyon/sdk'
 
 export function priceOf(market: Market | undefined, token: TokenInfo): PriceInfo | undefined {
   return market?.prices.get(token.address.toLowerCase())
