@@ -18,6 +18,7 @@ const NAV = [
   { href: '/liquidity', label: 'Liquidity' },
   { href: '/pool', label: 'Pool' },
   { href: '/activity', label: 'Activity' },
+  { href: '/stake', label: 'Stake' },
   { href: '/lab', label: 'Depeg' },
   { href: '/docs', label: 'Docs' },
 ]

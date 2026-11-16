@@ -25,6 +25,7 @@ export const FOOTER_COLUMNS: { title: string; links: FooterLink[] }[] = [
       { label: 'Liquidity', href: '/liquidity' },
       { label: 'Pool', href: '/pool' },
       { label: 'Activity', href: '/activity' },
+      { label: 'Stake $PEGLO', href: '/stake' },
     ],
   },
   {
