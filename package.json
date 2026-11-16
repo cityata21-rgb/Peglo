@@ -1,5 +1,5 @@
 {
-  "name": "halcyon",
+  "name": "peglo",
   "private": true,
   "license": "MIT",
   "workspaces": [
@@ -8,7 +8,7 @@
     "app"
   ],
   "scripts": {
-    "test": "npm run test -w @halcyon/sdk && cd contracts && forge test",
-    "dev": "npm run dev -w @halcyon/app"
+    "test": "npm run test -w @peglo/sdk && cd contracts && forge test",
+    "dev": "npm run dev -w @peglo/app"
   }
 }

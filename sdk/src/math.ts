@@ -9,7 +9,7 @@ export interface Range {
   maxShareBps: number
 }
 
-export type HalcyonErrorCode =
+export type PegloErrorCode =
   | 'SameToken'
   | 'ZeroAmount'
   | 'OffSurface'
@@ -20,15 +20,15 @@ export type HalcyonErrorCode =
   | 'ValueDecreased'
   | 'BackstopFull'
 
-export class HalcyonMathError extends Error {
-  constructor(readonly code: HalcyonErrorCode) {
+export class PegloMathError extends Error {
+  constructor(readonly code: PegloErrorCode) {
     super(code)
-    this.name = 'HalcyonMathError'
+    this.name = 'PegloMathError'
   }
 }
 
-const fail = (code: HalcyonErrorCode): never => {
-  throw new HalcyonMathError(code)
+const fail = (code: PegloErrorCode): never => {
+  throw new PegloMathError(code)
 }
 
 export function sqrt(a: bigint): bigint {

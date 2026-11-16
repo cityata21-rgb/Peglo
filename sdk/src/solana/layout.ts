@@ -76,7 +76,7 @@ export interface OracleState {
 
 export function decodeOracle(d: Uint8Array): OracleState {
   const b = Buffer.from(d)
-  if (b.length !== ORACLE_LEN || b[0] !== 1) throw new Error('not a Halcyon oracle account')
+  if (b.length !== ORACLE_LEN || b[0] !== 1) throw new Error('not a Peglo oracle account')
   const count = b[2]!
   const entries: OracleEntry[] = []
   for (let k = 0; k < count; k++) {

@@ -23,8 +23,8 @@ export interface Order {
 export const USE_AQUA_FLAG = 1n << 254n
 export const AQUA_SALT_OPCODE = 20
 export const AQUA_EXTRUCTION_OPCODE = 32
-export const HALCYON_TICK_OPCODE = 34
-export const HALCYON_BACKSTOP_OPCODE = 35
+export const PEGLO_TICK_OPCODE = 34
+export const PEGLO_BACKSTOP_OPCODE = 35
 
 const ORDER_PARAMS = [
   {
@@ -54,10 +54,10 @@ function program(opcode: number, args: Hex, venue: Venue, salt: bigint): Hex {
 }
 
 export const buildProgram = (config: RangeConfig, venue: Venue, salt: bigint): Hex =>
-  program(HALCYON_TICK_OPCODE, encodeConfig(config), venue, salt)
+  program(PEGLO_TICK_OPCODE, encodeConfig(config), venue, salt)
 
 export const buildBackstopProgram = (config: BackstopConfig, venue: Venue, salt: bigint): Hex =>
-  program(HALCYON_BACKSTOP_OPCODE, encodeBackstopConfig(config), venue, salt)
+  program(PEGLO_BACKSTOP_OPCODE, encodeBackstopConfig(config), venue, salt)
 
 export function buildOrder(maker: Address, config: RangeConfig, venue: Venue, salt: bigint): Order {
   return { maker: getAddress(maker), traits: USE_AQUA_FLAG, data: buildProgram(config, venue, salt) }
@@ -122,7 +122,7 @@ function parseWith<C>(data: Hex, nativeOpcode: number, decode: (a: Hex) => C): {
   return null
 }
 
-export const parseProgram = (data: Hex): ParsedProgram | null => parseWith(data, HALCYON_TICK_OPCODE, decodeConfig)
+export const parseProgram = (data: Hex): ParsedProgram | null => parseWith(data, PEGLO_TICK_OPCODE, decodeConfig)
 
 export interface ParsedBackstop {
   venue: Venue
@@ -131,4 +131,4 @@ export interface ParsedBackstop {
 }
 
 export const parseBackstopProgram = (data: Hex): ParsedBackstop | null =>
-  parseWith(data, HALCYON_BACKSTOP_OPCODE, decodeBackstopConfig)
+  parseWith(data, PEGLO_BACKSTOP_OPCODE, decodeBackstopConfig)

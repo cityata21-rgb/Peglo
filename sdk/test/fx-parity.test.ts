@@ -5,8 +5,8 @@ import { type Address, getAddress } from 'viem'
 import { describe, expect, it } from 'vitest'
 import {
   type BackstopConfig,
-  HALCYON_BACKSTOP_OPCODE,
-  HalcyonMathError,
+  PEGLO_BACKSTOP_OPCODE,
+  PegloMathError,
   backstopOut,
   buildBackstopOrder,
   decodeBackstopConfig,
@@ -58,7 +58,7 @@ const run = (f: () => bigint) => {
   try {
     return f().toString()
   } catch (e) {
-    if (e instanceof HalcyonMathError) return 'revert'
+    if (e instanceof PegloMathError) return 'revert'
     throw e
   }
 }
@@ -75,7 +75,7 @@ const maker = getAddress('0x00000000000000000000000000000000000A11CE')
 
 describe('backstop encoding matches Solidity', () => {
   it('uses the same opcode', () => {
-    expect(HALCYON_BACKSTOP_OPCODE).toBe(v.backstopOpcode)
+    expect(PEGLO_BACKSTOP_OPCODE).toBe(v.backstopOpcode)
   })
 
   it('encodes config byte for byte', () => {

@@ -1,4 +1,4 @@
-import { type Range, HalcyonMathError, exactIn } from './math.js'
+import { type Range, PegloMathError, exactIn } from './math.js'
 
 export interface RangeState {
   id: string
@@ -28,7 +28,7 @@ function outFor(s: RangeState, i: number, j: number, amount: bigint): bigint | n
   try {
     return s.quote ? s.quote(i, j, amount) : exactIn(s.real, s.rates, s.range, i, j, amount)
   } catch (e) {
-    if (e instanceof HalcyonMathError) return null
+    if (e instanceof PegloMathError) return null
     throw e
   }
 }

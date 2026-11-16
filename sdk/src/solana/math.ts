@@ -1,4 +1,4 @@
-import { HalcyonMathError } from '../math.js'
+import { PegloMathError } from '../math.js'
 
 export const E9 = 10n ** 9n
 
@@ -20,18 +20,18 @@ export interface SolBackstopQuote {
 }
 
 export function solBackstopOut(x: SolBackstopQuote): bigint {
-  if (x.amountIn === 0n) throw new HalcyonMathError('ZeroAmount')
+  if (x.amountIn === 0n) throw new PegloMathError('ZeroAmount')
   const unitIn = 10n ** BigInt(x.decimalsIn)
   const absorbed = (x.absorbedIn * x.faceIn) / unitIn
   const incoming = (x.amountIn * x.faceIn) / unitIn
-  if (absorbed + incoming > x.cap) throw new HalcyonMathError('BackstopFull')
+  if (absorbed + incoming > x.cap) throw new PegloMathError('BackstopFull')
   const span = BigInt(x.endBps - x.startBps)
   const twoCap = 2n * x.cap
   const discount = ceilDiv((BigInt(x.startBps) * twoCap + span * (2n * absorbed + incoming)) * 100_000n, twoCap)
-  if (discount >= E9) throw new HalcyonMathError('ZeroAmount')
+  if (discount >= E9) throw new PegloMathError('ZeroAmount')
   const market = x.marketIn < x.faceIn ? x.marketIn : x.faceIn
   const value = (x.amountIn * market * (E9 - discount)) / (unitIn * E9)
   const out = (value * 10n ** BigInt(x.decimalsOut)) / x.priceOut
-  if (out <= 1n) throw new HalcyonMathError('ZeroAmount')
+  if (out <= 1n) throw new PegloMathError('ZeroAmount')
   return out - 1n
 }
