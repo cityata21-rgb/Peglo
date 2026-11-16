@@ -6,26 +6,26 @@ import {SwapVM} from "@1inch/swap-vm/src/SwapVM.sol";
 import {AquaOpcodes} from "@1inch/swap-vm/src/opcodes/AquaOpcodes.sol";
 import {Context, SwapQuery, SwapRegisters} from "@1inch/swap-vm/src/libs/VM.sol";
 
-interface IStabrixPricer {
+interface IHalcyonPricer {
     function price(SwapQuery calldata query, SwapRegisters calldata swap, bytes calldata args)
         external
         view
         returns (SwapRegisters memory);
 }
 
-contract StabrixRouter is Simulator, SwapVM, AquaOpcodes {
-    IStabrixPricer public immutable PRICER;
-    IStabrixPricer public immutable BACKSTOP;
+contract HalcyonRouter is Simulator, SwapVM, AquaOpcodes {
+    IHalcyonPricer public immutable PRICER;
+    IHalcyonPricer public immutable BACKSTOP;
 
     constructor(address aqua, address weth, address owner, address pricer, address backstop)
-        SwapVM(aqua, weth, owner, "Stabrix", "1")
+        SwapVM(aqua, weth, owner, "Halcyon", "1")
         AquaOpcodes(aqua)
     {
-        PRICER = IStabrixPricer(pricer);
-        BACKSTOP = IStabrixPricer(backstop);
+        PRICER = IHalcyonPricer(pricer);
+        BACKSTOP = IHalcyonPricer(backstop);
     }
 
-    function stabrixOpcode() external pure returns (uint8) {
+    function halcyonOpcode() external pure returns (uint8) {
         return uint8(_opcodes().length);
     }
 
@@ -48,15 +48,15 @@ contract StabrixRouter is Simulator, SwapVM, AquaOpcodes {
         for (uint256 k; k < base.length; ++k) {
             all[k] = base[k];
         }
-        all[base.length] = _stabrixTick;
-        all[base.length + 1] = _stabrixBackstop;
+        all[base.length] = _halcyonTick;
+        all[base.length + 1] = _halcyonBackstop;
     }
 
-    function _stabrixTick(Context memory ctx, bytes calldata args) internal view {
+    function _halcyonTick(Context memory ctx, bytes calldata args) internal view {
         ctx.swap = PRICER.price(ctx.query, ctx.swap, args);
     }
 
-    function _stabrixBackstop(Context memory ctx, bytes calldata args) internal view {
+    function _halcyonBackstop(Context memory ctx, bytes calldata args) internal view {
         ctx.swap = BACKSTOP.price(ctx.query, ctx.swap, args);
     }
 }

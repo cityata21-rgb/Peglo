@@ -4,10 +4,11 @@ pragma solidity 0.8.30;
 import {IAqua} from "@1inch/aqua/src/interfaces/IAqua.sol";
 import {SwapQuery, SwapRegisters} from "@1inch/swap-vm/src/libs/VM.sol";
 
-import {StabrixBackstopPricing} from "./StabrixBackstopPricing.sol";
+import {HalcyonPricing} from "./HalcyonPricing.sol";
 
-/// @notice Backstop pricing for both venues: Extruction on the official router, price() for StabrixRouter.
-contract StabrixBackstop {
+/// @notice Halcyon pricing for both venues. The official router reaches it through Extruction,
+/// HalcyonRouter through price(). The caller is the Aqua app.
+contract HalcyonExtruction {
     IAqua public immutable AQUA;
 
     constructor(address aqua) {
@@ -22,7 +23,7 @@ contract StabrixBackstop {
         bytes calldata args,
         bytes calldata
     ) external view returns (uint256, uint256, SwapRegisters memory) {
-        return (nextPC, 0, StabrixBackstopPricing.price(AQUA, msg.sender, query, swap, args));
+        return (nextPC, 0, HalcyonPricing.price(AQUA, msg.sender, query, swap, args));
     }
 
     function price(SwapQuery calldata query, SwapRegisters calldata swap, bytes calldata args)
@@ -30,6 +31,6 @@ contract StabrixBackstop {
         view
         returns (SwapRegisters memory)
     {
-        return StabrixBackstopPricing.price(AQUA, msg.sender, query, swap, args);
+        return HalcyonPricing.price(AQUA, msg.sender, query, swap, args);
     }
 }

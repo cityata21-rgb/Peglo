@@ -5,46 +5,46 @@ import {Script} from "forge-std/Script.sol";
 import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 import {MakerTraits} from "@1inch/swap-vm/src/libs/MakerTraits.sol";
 
-import {StabrixRouter} from "../src/StabrixRouter.sol";
-import {StabrixLens} from "../src/StabrixLens.sol";
-import {StabrixConfig} from "../src/StabrixConfig.sol";
-import {StabrixMath} from "../src/StabrixMath.sol";
+import {HalcyonRouter} from "../src/HalcyonRouter.sol";
+import {HalcyonLens} from "../src/HalcyonLens.sol";
+import {HalcyonConfig} from "../src/HalcyonConfig.sol";
+import {HalcyonMath} from "../src/HalcyonMath.sol";
 
 contract MathHarness {
     function exactIn(
         uint256[] memory real,
         uint256[] memory rates,
-        StabrixMath.Range memory p,
+        HalcyonMath.Range memory p,
         uint256 i,
         uint256 j,
         uint256 a
     ) external pure returns (uint256) {
-        return StabrixMath.exactIn(real, rates, p, i, j, a);
+        return HalcyonMath.exactIn(real, rates, p, i, j, a);
     }
 
     function exactOut(
         uint256[] memory real,
         uint256[] memory rates,
-        StabrixMath.Range memory p,
+        HalcyonMath.Range memory p,
         uint256 i,
         uint256 j,
         uint256 a
     ) external pure returns (uint256) {
-        return StabrixMath.exactOut(real, rates, p, i, j, a);
+        return HalcyonMath.exactOut(real, rates, p, i, j, a);
     }
 
     function radius(uint256[] memory real, uint256[] memory rates, uint256 floor) external pure returns (uint256) {
-        return StabrixMath.radius(StabrixMath.virtualBalances(real, rates, floor));
+        return HalcyonMath.radius(HalcyonMath.virtualBalances(real, rates, floor));
     }
 }
 
 contract Vectors is Script {
     function run() external {
-        StabrixRouter router = new StabrixRouter(address(1), address(0), address(0xBEEF), address(2), address(3));
-        StabrixLens lens = new StabrixLens(address(1));
+        HalcyonRouter router = new HalcyonRouter(address(1), address(0), address(0xBEEF), address(2), address(3));
+        HalcyonLens lens = new HalcyonLens(address(1));
         MathHarness h = new MathHarness();
 
-        StabrixConfig.Config memory c;
+        HalcyonConfig.Config memory c;
         c.tokens = new address[](5);
         c.decimals = new uint8[](5);
         uint8[5] memory decs = [6, 6, 18, 6, 18];
@@ -77,8 +77,8 @@ contract Vectors is Script {
             vm.toString(officialOrder.data),
             "\",\"officialHash\":\"",
             vm.toString(keccak256(abi.encode(officialOrder))),
-            "\",\"stabrixOpcode\":",
-            vm.toString(router.stabrixOpcode()),
+            "\",\"halcyonOpcode\":",
+            vm.toString(router.halcyonOpcode()),
             ",\"cases\":[",
             _cases(h),
             "]}"
@@ -97,7 +97,7 @@ contract Vectors is Script {
                 real[k] = units * 10 ** decs[k] + (uint256(keccak256(abi.encode(seed, k, 1))) % 10 ** decs[k]);
                 rates[k] = 10 ** (36 - decs[k]);
             }
-            StabrixMath.Range memory p = StabrixMath.Range({
+            HalcyonMath.Range memory p = HalcyonMath.Range({
                 floor: (seed % 4) * 300e18,
                 sumCapRatio: 2.9e18,
                 feeBps: uint16(seed % 31),

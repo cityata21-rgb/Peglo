@@ -4,14 +4,14 @@ pragma solidity 0.8.30;
 import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 
 import {FxFixture} from "./utils/FxFixture.sol";
-import {StabrixConfig} from "../src/StabrixConfig.sol";
-import {StabrixMath} from "../src/StabrixMath.sol";
-import {StabrixOracle} from "../src/StabrixOracle.sol";
-import {StabrixPricing} from "../src/StabrixPricing.sol";
+import {HalcyonConfig} from "../src/HalcyonConfig.sol";
+import {HalcyonMath} from "../src/HalcyonMath.sol";
+import {HalcyonOracle} from "../src/HalcyonOracle.sol";
+import {HalcyonPricing} from "../src/HalcyonPricing.sol";
 import {MockFeed} from "../src/mocks/MockFeed.sol";
 import {MockStablecoin} from "../src/mocks/MockStablecoin.sol";
 
-contract StabrixFxTest is FxFixture {
+contract HalcyonFxTest is FxFixture {
     function test_FxSwapPricesAtFeedRate() public {
         (ISwapVM.Order memory order,) = shipUsd(lp, deep(1, 1), 10_000, 1);
         uint256 amountIn = amountFor(usdc, 1);
@@ -97,14 +97,14 @@ contract StabrixFxTest is FxFixture {
         t[0] = tokens[eurc];
         uint64 future = uint64(block.timestamp + 301);
         vm.prank(forwarder);
-        vm.expectRevert(abi.encodeWithSelector(StabrixOracle.FutureReport.selector, future));
+        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.FutureReport.selector, future));
         oracle.onReport(meta(), abi.encode(t, p, hlt, future));
     }
 
     function test_StaleFeedRefusesFxRangeButNotUsdRange() public {
         (ISwapVM.Order memory fx,) = shipUsd(lp, fxConfig(1, 5, 10_000, NO_EDGE), 100, 1);
 
-        StabrixConfig.Config memory c = fxConfig(1, 5, 10_000, NO_EDGE);
+        HalcyonConfig.Config memory c = fxConfig(1, 5, 10_000, NO_EDGE);
         uint256 m;
         for (uint256 k; k < N; ++k) {
             if (k != eurc && k != brz && k != idrx) ++m;
@@ -124,7 +124,7 @@ contract StabrixFxTest is FxFixture {
         uint256 firstFx = eurc < brz ? (eurc < idrx ? eurc : idrx) : (brz < idrx ? brz : idrx);
         fund(trader, usdc, unit(usdc), address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(StabrixOracle.StaleRate.selector, tokens[firstFx]));
+        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.StaleRate.selector, tokens[firstFx]));
         router.swap(fx, tokens[usdc], tokens[dai], unit(usdc), takerData(true, trader));
 
         assertGt(swapIn(usdOnly, usdc, dai, unit(usdc)), 0);
@@ -136,7 +136,7 @@ contract StabrixFxTest is FxFixture {
         uint256 amountIn = amountFor(brz, 1);
         fund(trader, brz, amountIn, address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(StabrixOracle.Halted.selector, tokens[brz]));
+        vm.expectRevert(abi.encodeWithSelector(HalcyonOracle.Halted.selector, tokens[brz]));
         router.swap(order, tokens[brz], tokens[usdc], amountIn, takerData(true, trader));
         assertGt(swapIn(order, usdc, brz, unit(usdc)), 0);
     }
@@ -156,7 +156,7 @@ contract StabrixFxTest is FxFixture {
         uint256 amountIn = amountFor(usdc, 5);
         fund(trader, usdc, amountIn, address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(StabrixPricing.InsufficientLiquidity.selector, tokens[eurc], left));
+        vm.expectRevert(abi.encodeWithSelector(HalcyonPricing.InsufficientLiquidity.selector, tokens[eurc], left));
         router.swap(order, tokens[usdc], tokens[eurc], amountIn, takerData(true, trader));
     }
 
@@ -166,7 +166,7 @@ contract StabrixFxTest is FxFixture {
         MockStablecoin(tokens[dai]).approve(address(aqua), 0);
         fund(trader, usdc, unit(usdc), address(router));
         vm.prank(trader);
-        vm.expectRevert(abi.encodeWithSelector(StabrixPricing.InsufficientLiquidity.selector, tokens[dai], 0));
+        vm.expectRevert(abi.encodeWithSelector(HalcyonPricing.InsufficientLiquidity.selector, tokens[dai], 0));
         router.swap(order, tokens[usdc], tokens[dai], unit(usdc), takerData(true, trader));
     }
 
@@ -204,7 +204,7 @@ contract StabrixFxTest is FxFixture {
             vm.prank(trader);
             try router.swap(order, tokens[brz], tokens[j], chunk, takerData(true, trader)) {}
             catch (bytes memory err) {
-                refused = bytes4(err) == StabrixMath.RangeEdge.selector;
+                refused = bytes4(err) == HalcyonMath.RangeEdge.selector;
             }
         }
         assertTrue(refused, "flooded coin hits the edge");

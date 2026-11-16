@@ -6,28 +6,28 @@ import {Aqua} from "@1inch/aqua/src/Aqua.sol";
 import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 import {TakerTraitsLib} from "@1inch/swap-vm/src/libs/TakerTraits.sol";
 
-import {StabrixRouter} from "../../src/StabrixRouter.sol";
-import {StabrixLens} from "../../src/StabrixLens.sol";
-import {StabrixConfig} from "../../src/StabrixConfig.sol";
-import {StabrixBatchTaker} from "../../src/StabrixBatchTaker.sol";
-import {StabrixExtruction} from "../../src/StabrixExtruction.sol";
-import {StabrixOracle} from "../../src/StabrixOracle.sol";
-import {StabrixBackstop} from "../../src/StabrixBackstop.sol";
+import {HalcyonRouter} from "../../src/HalcyonRouter.sol";
+import {HalcyonLens} from "../../src/HalcyonLens.sol";
+import {HalcyonConfig} from "../../src/HalcyonConfig.sol";
+import {HalcyonBatchTaker} from "../../src/HalcyonBatchTaker.sol";
+import {HalcyonExtruction} from "../../src/HalcyonExtruction.sol";
+import {HalcyonOracle} from "../../src/HalcyonOracle.sol";
+import {HalcyonBackstop} from "../../src/HalcyonBackstop.sol";
 import {MockStablecoin} from "../../src/mocks/MockStablecoin.sol";
 
 address constant CRE_SIMULATION_OWNER = 0xaAaAaAaaAaAaAaaAaAAAAAAAAaaaAaAaAaaAaaAa;
 
-abstract contract StabrixFixture is Test {
+abstract contract HalcyonFixture is Test {
     uint256 internal N;
     uint256 internal constant W = 1e18;
 
     Aqua internal aqua;
-    StabrixRouter internal router;
-    StabrixLens internal lens;
-    StabrixBatchTaker internal batch;
-    StabrixExtruction internal pricer;
-    StabrixOracle internal oracle;
-    StabrixBackstop internal backstop;
+    HalcyonRouter internal router;
+    HalcyonLens internal lens;
+    HalcyonBatchTaker internal batch;
+    HalcyonExtruction internal pricer;
+    HalcyonOracle internal oracle;
+    HalcyonBackstop internal backstop;
 
     address[] internal tokens;
     uint8[] internal decimals;
@@ -43,12 +43,12 @@ abstract contract StabrixFixture is Test {
 
     function setUp() public virtual {
         aqua = new Aqua();
-        pricer = new StabrixExtruction(address(aqua));
-        backstop = new StabrixBackstop(address(aqua));
-        router = new StabrixRouter(address(aqua), address(0), address(this), address(pricer), address(backstop));
-        lens = new StabrixLens(address(aqua));
-        batch = new StabrixBatchTaker();
-        oracle = new StabrixOracle(forwarder, address(this), 900, 50);
+        pricer = new HalcyonExtruction(address(aqua));
+        backstop = new HalcyonBackstop(address(aqua));
+        router = new HalcyonRouter(address(aqua), address(0), address(this), address(pricer), address(backstop));
+        lens = new HalcyonLens(address(aqua));
+        batch = new HalcyonBatchTaker();
+        oracle = new HalcyonOracle(forwarder, address(this), 900, 50);
         oracle.setWorkflowOwner(CRE_SIMULATION_OWNER);
 
         (string[] memory symbols, uint8[] memory decs) = specs();
@@ -83,7 +83,7 @@ abstract contract StabrixFixture is Test {
     function config(uint16 feeBps, uint16 maxShareBps, bool withOracle)
         internal
         view
-        returns (StabrixConfig.Config memory c)
+        returns (HalcyonConfig.Config memory c)
     {
         c.tokens = tokens;
         c.decimals = decimals;
@@ -95,7 +95,7 @@ abstract contract StabrixFixture is Test {
         c.oracle = withOracle ? address(oracle) : address(0);
     }
 
-    function ship(address maker, StabrixConfig.Config memory c, uint256 perToken, uint64 salt)
+    function ship(address maker, HalcyonConfig.Config memory c, uint256 perToken, uint64 salt)
         internal
         returns (ISwapVM.Order memory order, bytes32 strategyHash)
     {

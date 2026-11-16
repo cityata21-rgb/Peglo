@@ -4,37 +4,37 @@ pragma solidity 0.8.30;
 import {Script} from "forge-std/Script.sol";
 import {ISwapVM} from "@1inch/swap-vm/src/interfaces/ISwapVM.sol";
 
-import {StabrixRouter} from "../src/StabrixRouter.sol";
-import {StabrixLens} from "../src/StabrixLens.sol";
-import {StabrixMath} from "../src/StabrixMath.sol";
-import {StabrixBackstopConfig} from "../src/StabrixBackstopConfig.sol";
-import {StabrixBackstopPricing} from "../src/StabrixBackstopPricing.sol";
+import {HalcyonRouter} from "../src/HalcyonRouter.sol";
+import {HalcyonLens} from "../src/HalcyonLens.sol";
+import {HalcyonMath} from "../src/HalcyonMath.sol";
+import {HalcyonBackstopConfig} from "../src/HalcyonBackstopConfig.sol";
+import {HalcyonBackstopPricing} from "../src/HalcyonBackstopPricing.sol";
 
 contract FxHarness {
     function exactIn(
         uint256[] memory real,
         uint256[] memory rates,
-        StabrixMath.Range memory p,
+        HalcyonMath.Range memory p,
         uint256 i,
         uint256 j,
         uint256 a
     ) external pure returns (uint256) {
-        return StabrixMath.exactIn(real, rates, p, i, j, a);
+        return HalcyonMath.exactIn(real, rates, p, i, j, a);
     }
 
     function exactOut(
         uint256[] memory real,
         uint256[] memory rates,
-        StabrixMath.Range memory p,
+        HalcyonMath.Range memory p,
         uint256 i,
         uint256 j,
         uint256 a
     ) external pure returns (uint256) {
-        return StabrixMath.exactOut(real, rates, p, i, j, a);
+        return HalcyonMath.exactOut(real, rates, p, i, j, a);
     }
 
-    function backstop(StabrixBackstopPricing.Quote memory x) external pure returns (uint256) {
-        return StabrixBackstopPricing.quote(x);
+    function backstop(HalcyonBackstopPricing.Quote memory x) external pure returns (uint256) {
+        return HalcyonBackstopPricing.quote(x);
     }
 }
 
@@ -44,10 +44,10 @@ contract FxVectors is Script {
 
     function run() external {
         FxHarness h = new FxHarness();
-        StabrixRouter router = new StabrixRouter(address(1), address(0), address(0xBEEF), address(2), address(3));
-        StabrixLens lens = new StabrixLens(address(1));
+        HalcyonRouter router = new HalcyonRouter(address(1), address(0), address(0xBEEF), address(2), address(3));
+        HalcyonLens lens = new HalcyonLens(address(1));
 
-        StabrixBackstopConfig.Config memory c;
+        HalcyonBackstopConfig.Config memory c;
         c.tokens = new address[](8);
         c.decimals = new uint8[](8);
         for (uint256 k; k < 8; ++k) {
@@ -96,7 +96,7 @@ contract FxVectors is Script {
     struct OrbitalCase {
         uint256[] real;
         uint256[] rates;
-        StabrixMath.Range r;
+        HalcyonMath.Range r;
         uint256 i;
         uint256 j;
         uint256 amount;
@@ -115,7 +115,7 @@ contract FxVectors is Script {
             c.real[k] = usd * 10 ** DECS[k] * 1e18 / p + uint256(keccak256(abi.encode(seed, k, 1))) % 10 ** DECS[k];
             c.rates[k] = 10 ** (36 - DECS[k]) * p / 1e18;
         }
-        c.r = StabrixMath.Range({
+        c.r = HalcyonMath.Range({
             floor: (seed % 4) * 300e18,
             sumCapRatio: 5.4e18,
             feeBps: uint16(seed % 31),
@@ -157,7 +157,7 @@ contract FxVectors is Script {
             uint256 i = seed % 8;
             uint256 j = (i + 1 + (seed >> 8) % 7) % 8;
             uint256 face = _price(seed, i);
-            StabrixBackstopPricing.Quote memory x = StabrixBackstopPricing.Quote({
+            HalcyonBackstopPricing.Quote memory x = HalcyonBackstopPricing.Quote({
                 token: address(0x1234),
                 amountIn: (seed >> 16) % (3000 * 10 ** DECS[i] * 1e18 / face) + 1,
                 absorbedIn: (seed >> 80) % (5000 * 10 ** DECS[i] * 1e18 / face),

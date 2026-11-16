@@ -4,21 +4,21 @@ pragma solidity 0.8.30;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC165} from "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 
-import {IStabrixOracle} from "./interfaces/IStabrixOracle.sol";
+import {IHalcyonOracle} from "./interfaces/IHalcyonOracle.sol";
 import {IAggregatorV3} from "./interfaces/IAggregatorV3.sol";
 
 interface IReceiver is IERC165 {
     function onReport(bytes calldata metadata, bytes calldata report) external;
 }
 
-/// @notice USD prices for Stabrix. Tokens without a feed are pegged at $1. FX tokens use the CRE market price
+/// @notice USD prices for Halcyon. Tokens without a feed are pegged at $1. FX tokens use the CRE market price
 /// when it is fresh and within maxDeviationBps of their Chainlink feed, otherwise the feed; a stale feed refuses.
 /// A halted token has a depeg price for backstops: the lower of the fresh CRE price and its Chainlink market feed.
 /// Reports are refused until a workflow owner is set. CRE simulations report as 0xaAaA...aAaA, so fork and testnet
 /// oracles set that owner; production sets the deployed workflow's owner.
 /// Guardian halts are separate from CRE halts, so a calm report cannot lift them.
 /// Report: abi.encode(address[] tokens, uint256[] marketPricesE18, bool[] halted, uint64 observedAt)
-contract StabrixOracle is IStabrixOracle, IReceiver, Ownable {
+contract HalcyonOracle is IHalcyonOracle, IReceiver, Ownable {
     uint256 internal constant WAD = 1e18;
     uint256 internal constant BPS = 10_000;
     uint256 public constant MAX_FUTURE = 300;
