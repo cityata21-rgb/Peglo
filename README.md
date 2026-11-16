@@ -30,7 +30,9 @@
 18. [Verify and tests](#18-verify-and-tests)
 19. [Repo layout](#19-repo-layout)
 20. [Security notes](#20-security-notes)
-21. [License](#21-license)
+21. [$PEGLO token](#21-peglo-token)
+22. [Token flywheel](#22-token-flywheel)
+23. [License](#23-license)
 
 ## 1. What this is and who it is for
 
@@ -648,7 +650,66 @@ Known trust assumptions:
 
 Found a problem? Open a GitHub issue without exploit details and ask for a private contact.
 
-## 21. License
+## 21. $PEGLO token
+
+**Status: not launched yet.** The contract address will be added here and on the site's [Stake page](https://peglo.vercel.app/stake) at launch. Until then, any token calling itself $PEGLO is not ours.
+
+| | |
+|---|---|
+| Ticker | $PEGLO |
+| Chain | Solana |
+| Launch | pump.fun fair launch on a bonding curve, moving to PumpSwap when the curve fills |
+| Supply | 1,000,000,000, fixed. pump.fun mints it all at launch and nobody can mint more |
+| Decimals | 6 |
+| Contract address | Added at launch |
+| Team tokens | Only what the team buys at launch. They fund the staking reward pool |
+| Staking wallet | Added at launch |
+
+$PEGLO is not a share of the protocol, does not pay out protocol revenue today and has no governance rights.
+
+### Staking
+
+Holders lock $PEGLO for a term on the [Stake page](https://peglo.vercel.app/stake) and get it back with a reward after the unlock date.
+
+| Term | Reward for the term | Yearly rate |
+|---|---|---|
+| 7 days | 0.2% | 10.4% |
+| 30 days | 1.5% | 18.3% |
+| 90 days | 6% | 24.3% |
+| 180 days | 15% | 30.4% |
+
+How it works, and what you are trusting:
+
+- A lock is a token transfer to the team staking wallet with a memo naming the term (`peglo:stake:30`). It is not a smart contract, so holders trust the team to pay it back.
+- After unlock the team runs [`stake-payout`](ops/src/solana/stake-payout.ts), which sends principal plus reward with a memo pointing at the lock (`peglo:payout:<signature>`).
+- The page and the script read every lock and payout from the chain with the same code ([`stake.ts`](sdk/src/solana/stake.ts)), so anyone can check what is locked, what is due and what was paid.
+- Rewards come from a fixed pool the team funded. New locks stop when the pool cannot cover their reward, so locks already made are always covered first.
+
+```bash
+npm run solana:stake-payout -w @peglo/ops -- --cluster=mainnet --mint=<PEGLO mint>          # dry run, lists due locks
+npm run solana:stake-payout -w @peglo/ops -- --cluster=mainnet --mint=<PEGLO mint> --send   # pays them
+```
+
+## 22. Token flywheel
+
+What is live at launch and what is planned are kept apart.
+
+```mermaid
+flowchart LR
+  A[Stablecoin swaps and backstops on Peglo] -->|planned: protocol fee after audit| B[Treasury]
+  B -->|planned: buys $PEGLO| C[Staking reward pool]
+  C -->|live: rewards for locks| D[Holders lock $PEGLO]
+  D -->|locked tokens leave circulation| E[Less $PEGLO for sale]
+  E --> F[More reason to hold and lock]
+  F --> D
+  A -->|more LPs and volume| A
+```
+
+- **Live:** staking with rewards from the team-funded pool. Locked tokens are out of circulation until unlock.
+- **Planned, after an audit and the protocol fee in [Business model](#14-business-model):** part of protocol fees buys $PEGLO for the staking reward pool, so rewards come from real usage instead of a fixed pool.
+- Nothing here is a promise of price or returns. Plans can change, and the token can go to zero.
+
+## 23. License
 
 MIT for Peglo code. 1inch SwapVM and Aqua are dependencies under their own licenses.
 
