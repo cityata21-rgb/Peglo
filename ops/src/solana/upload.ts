@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { Keypair, SystemProgram, Transaction, TransactionInstruction } from '@solana/web3.js'
-import { LOADER_UPGRADEABLE } from '@stabrix/sdk/solana'
+import { LOADER_UPGRADEABLE } from '@halcyon/sdk/solana'
 import { ROOT } from '../env.js'
 import { cluster, connect, lamportsLeft, loadKeypair } from './common.js'
 
@@ -12,7 +12,7 @@ const arg = (name: string) => process.argv.find((a) => a.startsWith(`--${name}=`
 const c = cluster()
 const conn = connect(c)
 const payer = loadKeypair()
-const so = readFileSync(arg('so') ?? join(ROOT, 'solana', 'target', c === 'mainnet' ? 'stabrix-mainnet.so' : 'stabrix-devnet.so'))
+const so = readFileSync(arg('so') ?? join(ROOT, 'solana', 'target', c === 'mainnet' ? 'halcyon-mainnet.so' : 'halcyon-devnet.so'))
 const bufferPath = arg('buffer') ?? join(ROOT, 'solana', `buffer-${c}.json`)
 const perSecond = Number(arg('rate') ?? '3')
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))

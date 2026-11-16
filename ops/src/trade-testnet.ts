@@ -1,4 +1,4 @@
-import { StabrixClient, WAD, mockStablecoinAbi } from '@stabrix/sdk'
+import { HalcyonClient, WAD, mockStablecoinAbi } from '@halcyon/sdk'
 import { createWalletClient, formatUnits, http, parseEther } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { RPC_URL, connect, deployerKey, loadDeployment } from './env.js'
@@ -8,7 +8,7 @@ async function main() {
   const c = await connect()
   if (c.chainId === 8453) throw new Error('testnets only: this mints test coins to a fresh wallet')
   const d = loadDeployment(c.chainId)
-  const client = new StabrixClient(c.publicClient, d)
+  const client = new HalcyonClient(c.publicClient, d)
   const funder = createWalletClient({ chain: c.chain, account: privateKeyToAccount(deployerKey()), transport: http(RPC_URL) })
   const trader = createWalletClient({ chain: c.chain, account: privateKeyToAccount(generatePrivateKey()), transport: http(RPC_URL) })
   const tIn = d.tokens.find((t) => t.symbol === from)

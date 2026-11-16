@@ -1,4 +1,4 @@
-import { StabrixClient, WAD } from '@stabrix/sdk'
+import { HalcyonClient, WAD } from '@halcyon/sdk'
 import { connect, loadDeployment } from './env.js'
 
 const SIZES = [1_000n, 10_000n, 100_000n]
@@ -10,7 +10,7 @@ const PAIRS: [string, string][] = [
 async function main() {
   const c = await connect()
   const d = loadDeployment(c.chainId)
-  const client = new StabrixClient(c.publicClient, d)
+  const client = new HalcyonClient(c.publicClient, d)
   const market = await client.market()
   const bySymbol = (s: string) => d.tokens.find((t) => t.symbol === s)!
   const price = (a: string) => market.prices.get(a.toLowerCase())?.priceE18 ?? WAD

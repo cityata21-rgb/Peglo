@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
-import { type SolanaDeployment, type SolanaSigner, SolanaStabrixClient } from '@stabrix/sdk/solana'
+import { type SolanaDeployment, type SolanaSigner, SolanaHalcyonClient } from '@halcyon/sdk/solana'
 import { Connection, Keypair, type VersionedTransaction } from '@solana/web3.js'
 import { ROOT } from '../env.js'
 
@@ -61,7 +61,7 @@ export function writeDeployment(c: Cluster, d: SolanaDeployment) {
 export function clientFor(c: Cluster) {
   const d = readDeployment(c)
   if (!d) throw new Error(`no deployment for ${c}, run solana:setup first`)
-  return new SolanaStabrixClient(connect(c), d)
+  return new SolanaHalcyonClient(connect(c), d)
 }
 
 export interface CoinSpec {

@@ -1,4 +1,4 @@
-import type { PresetId } from '@stabrix/sdk'
+import type { PresetId } from '@halcyon/sdk'
 import { clientFor, cluster, connect, lamportsLeft, loadKeypair, signerOf } from './common.js'
 
 const c = cluster()

@@ -1,4 +1,4 @@
-# Stabrix reference model (integer, WAD). Orbital range + upgrades:
+# Halcyon reference model (integer, WAD). Orbital range + upgrades:
 #  - radius re-derived from live balances every swap (fees/yield compound to LP, no drift capture)
 #  - exact-in AND exact-out closed form
 #  - LP fee inside instruction; safety net: post-trade radius >= pre-trade radius

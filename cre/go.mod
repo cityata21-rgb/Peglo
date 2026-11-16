@@ -1,4 +1,4 @@
-module stabrix/cre
+module halcyon/cre
 
 go 1.25.3
 

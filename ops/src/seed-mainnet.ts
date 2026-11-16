@@ -1,4 +1,4 @@
-import { StabrixClient, type Venue, WAD, buildBackstopOrder, buildOrder } from '@stabrix/sdk'
+import { HalcyonClient, type Venue, WAD, buildBackstopOrder, buildOrder } from '@halcyon/sdk'
 import { type Address, createWalletClient, formatUnits, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { RPC_URL, connect, deployerKey, loadDeployment } from './env.js'
@@ -13,7 +13,7 @@ async function main() {
   const c = await connect()
   if (c.chainId !== 8453) throw new Error(`expected Base mainnet (8453), got ${c.chainId}`)
   const d = loadDeployment(c.chainId)
-  const client = new StabrixClient(c.publicClient, d)
+  const client = new HalcyonClient(c.publicClient, d)
   const wallet = createWalletClient({ chain: c.chain, account: privateKeyToAccount(key), transport: http(RPC_URL) })
   const me = wallet.account.address
 
