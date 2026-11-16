@@ -1,4 +1,4 @@
-use stabrix::math::{backstop_out, exact_in, pow10, BackstopQuote, Coins, Range, E9, MAX_COINS};
+use halcyon::math::{backstop_out, exact_in, pow10, BackstopQuote, Coins, Range, E9, MAX_COINS};
 
 struct Lcg(u64);
 
@@ -12,7 +12,7 @@ impl Lcg {
     }
 }
 
-fn result(r: Result<u64, stabrix::error::E>) -> String {
+fn result(r: Result<u64, halcyon::error::E>) -> String {
     match r {
         Ok(v) => format!("\"{v}\""),
         Err(e) => format!("\"{e:?}\""),
@@ -21,7 +21,7 @@ fn result(r: Result<u64, stabrix::error::E>) -> String {
 
 #[test]
 fn vectors() {
-    let Ok(path) = std::env::var("STABRIX_VECTORS") else {
+    let Ok(path) = std::env::var("HALCYON_VECTORS") else {
         return;
     };
     let mut rng = Lcg(7);
