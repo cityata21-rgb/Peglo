@@ -5,7 +5,7 @@ export const LINKS = {
   telegram: env(process.env.NEXT_PUBLIC_TELEGRAM_URL),
   discord: env(process.env.NEXT_PUBLIC_DISCORD_URL),
   github: env(process.env.NEXT_PUBLIC_GITHUB_URL),
-  video: env(process.env.NEXT_PUBLIC_DEMO_VIDEO_URL),
+  video: env(process.env.NEXT_PUBLIC_DEMO_VIDEO_URL) ?? '/peglo-demo.mp4',
   ambassador: env(process.env.NEXT_PUBLIC_AMBASSADOR_URL),
   linkedin: env(process.env.NEXT_PUBLIC_LINKEDIN_URL),
   program: 'https://solscan.io/account/9yndJ2CVGSWr58nXNVS8rgkYFiiXghkchicSK5KjhABw',

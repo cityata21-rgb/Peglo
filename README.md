@@ -2,7 +2,7 @@
 
 **Liquidity that never leaves.** Stablecoin FX markets and depeg backstops on **Solana** and on **1inch Aqua** (Base). One wallet balance makes markets across 8 stablecoins and stands behind every coin when one breaks. The coins never leave the wallet.
 
-[App](https://peglo.fun) · [Litepaper](https://peglo.fun/litepaper) · [Pitch deck](https://peglo.fun/deck) · [Solana mainnet program](https://solscan.io/account/9yndJ2CVGSWr58nXNVS8rgkYFiiXghkchicSK5KjhABw) · [Addresses](#8-addresses-and-revenue) · [Run locally](#17-run-locally) · [Tests](#18-verify-and-tests)
+[App](https://peglo.fun) · [Litepaper](https://peglo.fun/litepaper) · [Pitch deck](https://peglo.fun/deck) · [Demo video](https://peglo.fun/peglo-demo.mp4) · [Solana mainnet program](https://solscan.io/account/9yndJ2CVGSWr58nXNVS8rgkYFiiXghkchicSK5KjhABw) · [Addresses](#8-addresses-and-revenue) · [Run locally](#17-run-locally) · [Tests](#18-verify-and-tests)
 
 ![Landing](docs/screenshots/landing.png)
 
