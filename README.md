@@ -2,7 +2,7 @@
 
 **Liquidity that never leaves.** Stablecoin FX markets and depeg backstops on **Solana** and on **1inch Aqua** (Base). One wallet balance makes markets across 8 stablecoins and stands behind every coin when one breaks. The coins never leave the wallet.
 
-[App](https://peglo.vercel.app) · [Litepaper](https://peglo.vercel.app/litepaper) · [Pitch deck](https://peglo.vercel.app/deck) · [Solana mainnet program](https://solscan.io/account/9yndJ2CVGSWr58nXNVS8rgkYFiiXghkchicSK5KjhABw) · [Addresses](#8-addresses-and-revenue) · [Run locally](#17-run-locally) · [Tests](#18-verify-and-tests)
+[App](https://peglo.fun) · [Litepaper](https://peglo.fun/litepaper) · [Pitch deck](https://peglo.fun/deck) · [Solana mainnet program](https://solscan.io/account/9yndJ2CVGSWr58nXNVS8rgkYFiiXghkchicSK5KjhABw) · [Addresses](#8-addresses-and-revenue) · [Run locally](#17-run-locally) · [Tests](#18-verify-and-tests)
 
 ![Landing](docs/screenshots/landing.png)
 
@@ -465,7 +465,7 @@ Planned, after an audit:
 
 ## 16. Team
 
-Peglo is built by a small independent team that works pseudonymously. Reach out through the links on [peglo.vercel.app](https://peglo.vercel.app).
+Peglo is built by a small independent team that works pseudonymously. Reach out through the links on [peglo.fun](https://peglo.fun).
 
 Code was written with Claude Code as a pair programmer. Every number in this README comes from a test, a command in this repo or a linked transaction.
 
@@ -652,7 +652,7 @@ Found a problem? Open a GitHub issue without exploit details and ask for a priva
 
 ## 21. $PEGLO token
 
-**Status: not launched yet.** The contract address will be added here and on the site's [Stake page](https://peglo.vercel.app/stake) at launch. Until then, any token calling itself $PEGLO is not ours.
+**Status: not launched yet.** The contract address will be added here and on the site's [Stake page](https://peglo.fun/stake) at launch. Until then, any token calling itself $PEGLO is not ours.
 
 | | |
 |---|---|
@@ -669,7 +669,7 @@ $PEGLO is not a share of the protocol, does not pay out protocol revenue today a
 
 ### Staking
 
-Holders lock $PEGLO for a term on the [Stake page](https://peglo.vercel.app/stake) and get it back with a reward after the unlock date.
+Holders lock $PEGLO for a term on the [Stake page](https://peglo.fun/stake) and get it back with a reward after the unlock date.
 
 | Term | Reward for the term | Yearly rate |
 |---|---|---|
