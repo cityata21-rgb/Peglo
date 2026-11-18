@@ -53,3 +53,4 @@ html[data-theme=dark] .deck{--d-paper:#14120e;--d-card:#1d1a15;--d-ink:#ece6d4;-
   .deck .slide-inner{width:1600px;height:900px;aspect-ratio:auto;border:0;border-radius:0}
   .deck-controls{display:none}
 }
+.deck .note a,.deck header a{color:inherit;text-decoration:underline;text-underline-offset:.2em}

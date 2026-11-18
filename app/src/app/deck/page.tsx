@@ -74,7 +74,9 @@ export default function Deck() {
               <LogoMark className="mark" />
               Peglo
             </span>
-            <span>Live on Solana mainnet</span>
+            <span>
+              <a href="https://peglo.fun">peglo.fun</a> · Live on Solana mainnet
+            </span>
           </header>
           <h1>
             Liquidity that
@@ -287,7 +289,9 @@ export default function Deck() {
             ['Audit and grants', 'Support to audit the program and harden the oracle before scaling.'],
           ]}
         />
-        <p className="note">Live on Solana mainnet · built by a small independent team</p>
+        <p className="note">
+          <a href="https://peglo.fun">peglo.fun</a> · <a href="https://github.com/cityata21-rgb/Peglo">github.com/cityata21-rgb/Peglo</a> · Live on Solana mainnet · built by a small independent team
+        </p>
       </Slide>
     </main>
   )

@@ -34,6 +34,7 @@ export const FOOTER_COLUMNS: { title: string; links: FooterLink[] }[] = [
       { label: 'Docs', href: '/docs' },
       { label: 'Litepaper', href: '/litepaper' },
       { label: 'Pitch deck', href: '/deck' },
+      { label: 'Pitch deck (PDF)', href: '/peglo-deck.pdf', external: true },
       { label: 'Demo video', href: LINKS.video, external: true },
     ],
   },
