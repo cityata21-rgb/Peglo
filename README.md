@@ -495,6 +495,7 @@ npm run solana:setup -- --cluster=devnet                    # coins, oracle, dep
 npm run solana:sentinel -- --cluster=devnet                 # one price report; add --loop=60 to keep running
 npm run solana:sentinel -- --cluster=devnet --override=USDe=0.93   # depeg demo, devnet only
 npm run solana:seed -- --cluster=devnet
+npm run solana:devnet-smoke                                # fresh LP and taker on devnet: open, swap, close
 ```
 
 ### Local Base fork
