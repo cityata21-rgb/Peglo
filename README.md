@@ -496,6 +496,7 @@ npm run solana:sentinel -- --cluster=devnet                 # one price report; 
 npm run solana:sentinel -- --cluster=devnet --override=USDe=0.93   # depeg demo, devnet only
 npm run solana:seed -- --cluster=devnet
 npm run solana:devnet-smoke                                # fresh LP and taker on devnet: open, swap, close
+npm run solana:mainnet-smoke -- --send                     # $1 USDC/USDT range, 0.30 swap, close, sweep back (real funds)
 ```
 
 ### Local Base fork

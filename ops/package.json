@@ -21,7 +21,8 @@
     "solana:sentinel": "tsx src/solana/sentinel.ts",
     "solana:e2e": "tsx src/solana/e2e.ts",
     "solana:stake-payout": "tsx src/solana/stake-payout.ts",
-    "solana:devnet-smoke": "tsx src/solana/devnet-smoke.ts"
+    "solana:devnet-smoke": "tsx src/solana/devnet-smoke.ts",
+    "solana:mainnet-smoke": "tsx src/solana/mainnet-smoke.ts"
   },
   "dependencies": {
     "@solana/spl-token": "^0.4.14",
