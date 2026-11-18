@@ -242,7 +242,7 @@ export default function Deck() {
           </li>
           <li>
             <b>Halt</b>
-            <span>3% off peg on any source, or 0.75% on both: the coin is halted. Every range refuses it.</span>
+            <span>3% off peg on every price API or on the market feed, or 0.75% on both: halted. Every range refuses it.</span>
           </li>
           <li>
             <b>Buy</b>
